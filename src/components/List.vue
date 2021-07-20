@@ -3,9 +3,12 @@
     <p id="title"> {{title}} </p>
     <Task 
       v-for="task in tasks" 
-      :key="task.id" 
+      :key="task.id"
+      :id = "task.id"
       :description="task.description" 
-      :due="task.due" />
+      :due="task.due" 
+      @update-description="updateDescription"
+      />
   </div>
 </template>
 
@@ -14,9 +17,17 @@ import Task from './Task.vue'
 
 export default {
   name: 'List',
+
   components: {
     Task
   },
+
+  methods: {
+    updateDescription(id, formEdit){
+      this.$emit('update-description', id, formEdit);
+    }
+  },
+
   props: {
     title: String,
     tasks: Array,

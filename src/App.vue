@@ -1,6 +1,9 @@
 <template>
   <div class="main-body">
-    <List title="LIST ONE" :tasks="taskList" />
+    <List title="LIST ONE" 
+      :tasks="taskList" 
+      @update-description="updateDescription"
+    />
   </div>
 </template>
 
@@ -38,8 +41,25 @@ export default {
         id: 3,
         description: "LOREM IPSUM, I DO NOT REMEMBER FURTHER!!!",
         due: "2021/08/07"
+      },
+      {
+        id: 4,
+        description: "Form is nice \n I LIKE FORM!",
+        due: "2021/08/07"
       }
     ]
+  },
+
+  methods: {
+    // Update description of task
+    updateDescription(id, formEdit) {
+      this.taskList = this.taskList.map((task) => {
+        if(task.id == id){
+          task.description = formEdit;
+        }
+        return task;
+      });
+    }
   },
 
 }
