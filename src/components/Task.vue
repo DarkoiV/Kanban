@@ -46,6 +46,7 @@ export default {
     },
     // Send edited task to parent
     saveEdit() {
+      this.editable = !this.editable;
       console.log("TASK:", this.id, this.formEdit);
       this.$emit('update-description', this.id, this.formEdit)
     }
