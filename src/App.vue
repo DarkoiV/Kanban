@@ -31,7 +31,7 @@ export default {
   created() {
     this.boardLists = [
       {
-        id: 0,
+        pos: 0,
         title: "TO DO",
         list: [
           {
@@ -87,13 +87,13 @@ export default {
 
   methods: {
     // Update description of task
-    updateDescription(id, formEdit) {
-      this.taskList = this.taskList.map((task) => {
-        if(task.id == id){
+    updateDescription(listID, taskID, formEdit) {
+      this.boardLists[listID].list.map(task =>{
+        if(task.id == taskID){
           task.description = formEdit;
         }
         return task;
-      });
+      })
     }
   },
 

@@ -24,7 +24,7 @@ export default {
 
   methods: {
     updateDescription(id, formEdit){
-      this.$emit('update-description', id, formEdit);
+      this.$emit('update-description', this.id, id, formEdit);
     }
   },
 
