@@ -24,12 +24,12 @@ export default {
 
   methods: {
     updateDescription(id, formEdit){
-      this.$emit('update-description', this.id, id, formEdit);
+      this.$emit('update-description', this.pos, id, formEdit);
     }
   },
 
   props: {
-    id: Number,
+    pos: Number,
     title: String,
     tasks: Array,
   }

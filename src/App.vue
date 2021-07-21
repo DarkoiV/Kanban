@@ -1,7 +1,7 @@
 <template>
   <div class="main-body">
     <List v-for="taskList in boardLists"
-      :id="taskList.id"
+      :pos="taskList.pos"
       :title="taskList.title"
       :key="taskList.id"
       :tasks="taskList.list" 
@@ -57,7 +57,7 @@ export default {
         ]
       },
       {
-        id: 1,
+        pos: 1,
         title: "In Progress",
         list: [
           {
@@ -87,8 +87,8 @@ export default {
 
   methods: {
     // Update description of task
-    updateDescription(listID, taskID, formEdit) {
-      this.boardLists[listID].list.map(task =>{
+    updateDescription(listPos, taskID, formEdit) {
+      this.boardLists[listPos].list.map(task =>{
         if(task.id == taskID){
           task.description = formEdit;
         }
