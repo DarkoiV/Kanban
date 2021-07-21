@@ -29,6 +29,7 @@ export default {
   },
 
   props: {
+    id: Number,
     title: String,
     tasks: Array,
   }
