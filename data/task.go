@@ -16,8 +16,9 @@ type Task struct {
 // List of tasks
 type TaskList struct {
     ID              int         `json:"id"`
+    Pos             int         `json:"pos"`
     Title           string      `json:"title"`
-    Tasks           []*Task      `json:"tasks"`
+    Tasks           []*Task     `json:"tasks"`
 }
 
 // Alias for multiple task lists
