@@ -45,6 +45,8 @@ export default {
   margin: 0px;
 }
 .list {
+  align-self: flex-start;
+
   background-color: antiquewhite;
   border-radius: 3px;
   margin: 5px;
@@ -54,5 +56,6 @@ export default {
   padding-bottom: 10px;
 
   width: 300px;
+  overflow: auto;
 }
 </style>
