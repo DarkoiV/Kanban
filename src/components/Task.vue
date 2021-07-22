@@ -63,11 +63,14 @@ export default {
   margin-bottom: 5px;
 }
 textarea {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 14px;
-  resize: vertical; 
+  resize: none; 
 
-  max-width: calc(100% - 10px);
+  width: calc(100% - 12px);
   margin: 0;
+
+  border: none;
 }
 .due {
   font-size: 70%;
