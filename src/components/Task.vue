@@ -12,8 +12,8 @@
       <textarea 
         v-model="formEdit"
         ref="textInput"
-        @keydown.enter.exact.prevent
-        @keydown.enter.exact="saveEdit"
+        @keydown.enter.shift.exact.prevent
+        @keydown.enter.shift.exact="saveEdit"
         @blur="saveEdit"
         @input="resize"
       /> 
@@ -85,11 +85,12 @@ export default {
 textarea {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 100;
   resize: none; 
 
   width: calc(100% - 12px);
   margin: 0;
+  padding: 0;
 
   border: none;
 }
@@ -99,7 +100,7 @@ textarea:focus {
 .cardText {
   width: calc(100% - 14px);
   white-space: pre-wrap;
-  word-break: break-all;
+  word-break: break-word;
 }
 .due {
   font-size: 70%;
