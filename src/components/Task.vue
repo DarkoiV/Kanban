@@ -3,7 +3,7 @@
     <p 
       style="white-space: pre-wrap;"
       v-if="editable" 
-      @dblclick="editTask()"
+      @dblclick="editTask"
     > 
       {{ taskObject.description }} 
     </p>
@@ -12,7 +12,8 @@
       <textarea 
         v-model="formEdit"
         @keydown.enter.exact.prevent
-        @keydown.enter.exact="saveEdit()"
+        @keydown.enter.exact="saveEdit"
+        @input="resize"
       /> 
     </form>
 
@@ -38,15 +39,26 @@ export default {
 
   methods: {
     // Start editing task
-    editTask() {
+    editTask(e) {
       this.formEdit = this.taskObject.description;
       this.editable = !this.editable;
+
+      // Resize it
+      e.target.style.height = "auto"
+      e.target.style.height = `${e.target.scrollHeight}px`
     },
+
     // Send edited task to parent
     saveEdit() {
       this.editable = !this.editable;
       console.log("TASK:", this.taskObject.id, this.formEdit);
       this.$emit('update-description', this.taskObject.id, this.formEdit)
+    },
+
+    // Resize text area
+    resize(e) {
+      e.target.style.height = "auto"
+      e.target.style.height = `${e.target.scrollHeight}px`
     }
   },
 }
