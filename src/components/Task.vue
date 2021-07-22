@@ -5,7 +5,7 @@
       v-show="editable" 
       @dblclick="editTask"
     > 
-      {{ taskObject.description }} 
+      {{ taskObject.description }}
     </p>
 
     <form v-show="!editable" class="task-form"> 
@@ -85,6 +85,7 @@ export default {
 textarea {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 14px;
+  font-weight: 300;
   resize: none; 
 
   width: calc(100% - 12px);
@@ -92,8 +93,11 @@ textarea {
 
   border: none;
 }
+textarea:focus {
+  outline: none;
+}
 .cardText {
-  width: calc(100% - 12px);
+  width: calc(100% - 14px);
   white-space: pre-wrap;
   word-break: break-all;
 }
