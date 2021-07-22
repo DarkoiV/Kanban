@@ -1,7 +1,7 @@
 <template>
   <div class="task">
-    <p 
-      style="white-space: pre-wrap;"
+    <p
+      class="cardText"
       v-show="editable" 
       @dblclick="editTask"
     > 
@@ -45,8 +45,12 @@ export default {
       this.formEdit = this.taskObject.description;
       this.editable = !this.editable;
 
-      // Grab input
       this.$nextTick(() => {
+        // Resize it
+        this.$refs.textInput.height = "auto"
+        this.$refs.textInput.height = `${this.$refs.textInput.scrollHeight}px`
+
+        // Grab input
         this.$refs.textInput.focus()
       })
     },
@@ -62,6 +66,7 @@ export default {
     resize(e) {
       e.target.style.height = "auto"
       e.target.style.height = `${e.target.scrollHeight}px`
+      console.log(e.target.scrollHeight)
     }
   },
 }
@@ -86,6 +91,11 @@ textarea {
   margin: 0;
 
   border: none;
+}
+.cardText {
+  width: calc(100% - 12px);
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 .due {
   font-size: 70%;
