@@ -2,17 +2,19 @@
   <div class="task">
     <p 
       style="white-space: pre-wrap;"
-      v-if="editable" 
+      v-show="editable" 
       @dblclick="editTask"
     > 
       {{ taskObject.description }} 
     </p>
 
-    <form v-else class="task-form"> 
+    <form v-show="!editable" class="task-form"> 
       <textarea 
         v-model="formEdit"
+        ref="textInput"
         @keydown.enter.exact.prevent
         @keydown.enter.exact="saveEdit"
+        @blur="saveEdit"
         @input="resize"
       /> 
     </form>
@@ -39,13 +41,14 @@ export default {
 
   methods: {
     // Start editing task
-    editTask(e) {
+    editTask() {
       this.formEdit = this.taskObject.description;
       this.editable = !this.editable;
 
-      // Resize it
-      e.target.style.height = "auto"
-      e.target.style.height = `${e.target.scrollHeight}px`
+      // Grab input
+      this.$nextTick(() => {
+        this.$refs.textInput.focus()
+      })
     },
 
     // Send edited task to parent
