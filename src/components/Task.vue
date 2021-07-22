@@ -5,7 +5,7 @@
       v-if="editable" 
       @dblclick="editTask()"
     > 
-      {{description}} 
+      {{ taskObject.description }} 
     </p>
 
     <form v-else class="task-form"> 
@@ -16,7 +16,7 @@
       /> 
     </form>
 
-    <p class="due"> {{ due }} </p>
+    <p class="due"> {{ taskObject.due }} </p>
   </div>
 </template>
 
@@ -26,9 +26,7 @@ export default {
   name: 'Task',
 
   props: {
-    id: Number,
-    description: String,
-    due: Date,
+    taskObject: Object,
   },
 
   data() {
@@ -41,14 +39,14 @@ export default {
   methods: {
     // Start editing task
     editTask() {
-      this.formEdit = this.description;
+      this.formEdit = this.taskObject.description;
       this.editable = !this.editable;
     },
     // Send edited task to parent
     saveEdit() {
       this.editable = !this.editable;
-      console.log("TASK:", this.id, this.formEdit);
-      this.$emit('update-description', this.id, this.formEdit)
+      console.log("TASK:", this.taskObject.id, this.formEdit);
+      this.$emit('update-description', this.taskObject.id, this.formEdit)
     }
   },
 }

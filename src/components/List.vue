@@ -4,9 +4,7 @@
     <Task 
       v-for="task in tasks" 
       :key="task.id"
-      :id = "task.id"
-      :description="task.description" 
-      :due="task.due" 
+      :taskObject = "task"
       @update-description="updateDescription"
       />
   </div>
