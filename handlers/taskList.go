@@ -19,9 +19,14 @@ func NewListsHandler (l *log.Logger) *ListsHandler {
 
 // GET lists
 func (lh *ListsHandler) GetLists(rw http.ResponseWriter, rq *http.Request) {
+    // Log action
+    lh.l.Println("GET lists of tasks from:", rq.URL)
+
+    // Write content type
+    rw.Header().Set("Content-Type", "application/json")
+
     // Load data and convert to JSON 
     taskList := data.GetMockData()
-    lh.l.Println("GET lists of tasks from:", rq.URL);
     err := taskList.ToJSON(rw)
 
     // Check for errors during JSON convertion
@@ -30,4 +35,5 @@ func (lh *ListsHandler) GetLists(rw http.ResponseWriter, rq *http.Request) {
         http.Error(rw, "Error with getting list", http.StatusInternalServerError)
         return
     }
+
 }
