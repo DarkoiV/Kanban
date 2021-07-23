@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 
 	"github.com/darkoiv/Kanban-back-go/handlers"
 	"github.com/gorilla/mux"
@@ -23,7 +24,27 @@ func main() {
     getListRoute := router.Methods("GET").Subrouter()
     getListRoute.HandleFunc("/{board}/lists", lh.GetLists)
 
-    // Start listening
-    serverLogger.Println("Starting . . .")
-    http.ListenAndServe(":9090", router)
+    // Create server
+    server := &http.Server{
+        Addr: ":9000",
+        Handler: router,
+    }
+
+    // Run server
+    serverLogger.Println("Starting server!")
+    go func() {
+        // Check fo server errors
+        err := server.ListenAndServe();
+        if err != nil {
+            serverLogger.Fatalln(err);
+        }
+    }()
+
+    // Register OS channel, for quit requests
+    osChannel := make(chan os.Signal)
+    signal.Notify(osChannel, os.Interrupt, os.Kill);
+
+    // Wait for signal
+    sig := <-osChannel
+    serverLogger.Println("Requestes shutdown, signal:", sig)
 }
