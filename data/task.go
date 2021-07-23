@@ -9,7 +9,7 @@ import (
 // Struct holding task data
 type Task struct {
     ID              int         `json:"id"`
-    Pis             int         `json:"pos"`
+    Pos             int         `json:"pos"`
     Description     string      `json:"description"`
     DueDate         string      `json:"dueDate"`
 }
