@@ -21,11 +21,12 @@ func main() {
     router := mux.NewRouter()
 
     // Create handlers
-    lh := handlers.NewListsHandler(serverLogger);
+    bh := handlers.NewBoardHandler(serverLogger);
 
-    // Register routes
-    getListRoute := router.Methods("GET").Subrouter()
-    getListRoute.HandleFunc("/{board}/lists", lh.GetLists)
+    // Register board routes 
+    boardRoute := router.PathPrefix("/{board}").Subrouter()
+
+    boardRoute.HandleFunc("/lists", bh.GetLists).Methods("get")
 
     // Create server
     server := &http.Server{

@@ -7,18 +7,18 @@ import (
 	"github.com/darkoiv/Kanban-back-go/data"
 )
 
-// Task list handler
-type ListsHandler struct {
+// Board handler
+type boardHandler struct {
     l *log.Logger
 }
 
 // Create task list handler with logger
-func NewListsHandler (l *log.Logger) *ListsHandler {
-    return &ListsHandler{l}
+func NewBoardHandler (l *log.Logger) *boardHandler {
+    return &boardHandler{l}
 }
 
 // GET lists
-func (lh *ListsHandler) GetLists(rw http.ResponseWriter, rq *http.Request) {
+func (lh *boardHandler) GetLists(rw http.ResponseWriter, rq *http.Request) {
     // Log action
     lh.l.Println("GET lists of tasks from:", rq.URL)
 
