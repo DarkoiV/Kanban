@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/darkoiv/Kanban-back-go/handlers"
+	"github.com/darkoiv/Kanban-back-go/board"
 	"github.com/gorilla/mux"
 )
 
@@ -21,11 +21,12 @@ func main() {
     router := mux.NewRouter()
 
     // Create handlers
-    bh := handlers.NewBoardHandler(serverLogger);
+    bh := board.NewHandler(serverLogger);
 
     // Register board routes 
-    boardRoute := router.PathPrefix("/{board}").Subrouter()
+    boardRoute := router.PathPrefix("/api/{board}").Subrouter()
 
+    boardRoute.HandleFunc("", bh.GetBoard).Methods("get")
     boardRoute.HandleFunc("/lists", bh.GetLists).Methods("get")
 
     // Create server

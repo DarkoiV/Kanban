@@ -1,4 +1,4 @@
-package data
+package board
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 )
 
 // Struct holding task data
-type Task struct {
+type task struct {
     ID              int         `json:"id"`
     Pos             int         `json:"pos"`
     Description     string      `json:"description"`
@@ -15,31 +15,31 @@ type Task struct {
 }
 
 // List of tasks
-type TaskList struct {
+type taskList struct {
     ID              int         `json:"id"`
     Pos             int         `json:"pos"`
     Title           string      `json:"title"`
-    Tasks           []*Task     `json:"tasks"`
+    Tasks           []*task     `json:"tasks"`
 }
 
 // Alias for multiple task lists
-type Lists []TaskList
+type lists []taskList
 
 // Create JSON list from struct
-func (lists *Lists) ToJSON(w io.Writer) error {
+func (l *lists) toJSON(w io.Writer) error {
     e := json.NewEncoder(w)
-    return e.Encode(lists)
+    return e.Encode(l)
 }
 
 // MOCK DATA ////////////////////////////////////////////////////////////
 
 // Get mock data for now
-func GetMockData() Lists {
+func getMockData() lists {
     return mockData;
 }
 
 // TMP MOCK DATA
-var mockTasks = []*Task{
+var mockTasks = []*task {
     {
         ID: 0,
         Description: "This is my first task",
@@ -61,7 +61,7 @@ var mockTasks = []*Task{
         DueDate: time.Now().Local().String(),
     },
 }
-var mockTasks2 = []*Task{
+var mockTasks2 = []*task {
     {
         ID: 4,
         Description: "Lorem ipsum",
@@ -83,7 +83,7 @@ var mockTasks2 = []*Task{
         DueDate: time.Now().Local().String(),
     },
 }
-var mockData = Lists {
-    TaskList{ID: 0, Title: "To Do", Tasks: mockTasks},
-    TaskList{ID: 0, Title: "In progress", Tasks: mockTasks2},
+var mockData = lists {
+    taskList{ID: 0, Title: "To Do", Tasks: mockTasks},
+    taskList{ID: 0, Title: "In progress", Tasks: mockTasks2},
 }
