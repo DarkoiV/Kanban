@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/darkoiv/Kanban-back-go/board"
+	"github.com/darkoiv/Kanban-Backend/board"
 	"github.com/gorilla/mux"
 )
 
