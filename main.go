@@ -2,34 +2,24 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
-	"syscall"
 	"time"
 
 	"github.com/darkoiv/Kanban-Backend/board"
 	"github.com/gorilla/mux"
 )
 
+
+// Main function
 func main() {
-    // Create server logger
     serverLogger := log.New(os.Stdout, "[Server Log] ", 2)
 
-    // Create router
-    router := mux.NewRouter()
+    router := createRouter(serverLogger)
 
-    // Create handlers
-    bh := board.NewHandler(serverLogger);
-
-    // Register board routes 
-    boardRoute := router.PathPrefix("/api/{board}").Subrouter()
-
-    boardRoute.HandleFunc("", bh.GetBoard).Methods("get")
-    boardRoute.HandleFunc("/lists", bh.GetLists).Methods("get")
-
-    // Create server
     server := &http.Server{
         Addr: ":9000",
         Handler: router,
@@ -39,8 +29,38 @@ func main() {
 
     }
 
-    // Run server
-    serverLogger.Println("Starting server . . . ")
+    runServer(server, serverLogger);
+}
+
+
+// Creates server router and registers all routes
+func createRouter(logger *log.Logger) *mux.Router {
+    serverRouter := mux.NewRouter();
+
+    // Register board routes
+    bh := board.NewHandler(logger);
+
+    boardRoute := serverRouter.PathPrefix("/api/{board}").Subrouter()
+
+    boardRoute.HandleFunc("", bh.GetBoard).Methods("GET")
+
+    boardRoute.HandleFunc("/lists", bh.GetLists).Methods("GET")
+    boardRoute.HandleFunc("/lists", bh.UpdateOrder).Methods("PATCH")
+    boardRoute.HandleFunc("/list/{id}", bh.DeleteList).Methods("DELETE")
+
+    boardRoute.HandleFunc("/list/{id}", bh.PostCard).Methods("POST")
+    boardRoute.HandleFunc("/list/{id}", bh.UpdateCard).Methods("PUT")
+    boardRoute.HandleFunc("/list/{id}/{task}", bh.UpdateCard).Methods("DELETE")
+
+    return serverRouter;
+}
+
+
+// Runs server, until requested for quit
+func runServer(server *http.Server, serverLogger *log.Logger) {
+
+    // Start server
+    serverLogger.Printf("Starting server on port %s . . . ", server.Addr)
     go func() {
         // Check fo server errors
         err := server.ListenAndServe(); if err != nil {
@@ -50,10 +70,11 @@ func main() {
 
     // Register OS channel, for quit requests
     osChannel := make(chan os.Signal)
-    signal.Notify(osChannel, os.Interrupt, syscall.SIGTERM, syscall.SIGINT);
+    signal.Notify(osChannel, os.Interrupt);
 
     // Wait for signal
     sig := <-osChannel
+    fmt.Println();
     serverLogger.Println("Requestes shutdown, signal:", sig)
 
     // Graceful shutdown
@@ -62,7 +83,6 @@ func main() {
         serverLogger.Fatalln("Server didn't shutdown properly:",err)
     }
     defer func(){
-        // Some handling here
         cancel()
     }()
 

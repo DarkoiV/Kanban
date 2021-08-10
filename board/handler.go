@@ -16,10 +16,12 @@ func NewHandler (l *log.Logger) *boardHandler {
     return &boardHandler{l}
 }
 
-// GET board
-func (lh *boardHandler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
+///// BOARD METHODS ///////////////////////////////////////////////////////////////////////////////
+
+// (GET) board
+func (bh *boardHandler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
     // Log action
-    lh.l.Println("GET board from:", rq.URL)
+    bh.l.Println("GET board from:", rq.URL)
 
     // Write content type
     rw.Header().Set("Content-Type", "application/json")
@@ -29,21 +31,43 @@ func (lh *boardHandler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
 
 }
 
-// GET lists
-func (lh *boardHandler) GetLists(rw http.ResponseWriter, rq *http.Request) {
-    // Log action
-    lh.l.Println("GET lists of tasks from:", rq.URL)
+///// LISTS METHODS ///////////////////////////////////////////////////////////////////////////////
 
-    // Load data and convert to JSON 
-    taskList := getMockData()
-    err := taskList.toJSON(rw)
+// (GET) lists on board
+func (bh *boardHandler) GetLists(rw http.ResponseWriter, rq *http.Request) {
 
-    // Check for errors during JSON convertion
-    if err != nil {
-        lh.l.Println("Error", err)
-        http.Error(rw, "Error with getting list", http.StatusInternalServerError)
-        return
-    }
+
+    rw.Header().Set("Content-Type", "application/json")
+}
+
+// (PATCH) Update order of cards in lists
+func (bh *boardHandler) UpdateOrder(rw http.ResponseWriter, rq *http.Request) {
+
+    rw.Header().Set("Content-Type", "application/json")
+}
+
+// (DELETE) list from board
+func (bh *boardHandler) DeleteList(rw http.ResponseWriter, rq *http.Request) {
+
+    rw.Header().Set("Content-Type", "application/json")
+}
+
+///// CARDS METHODS ///////////////////////////////////////////////////////////////////////////////
+
+// (POST) Create new card
+func (bh *boardHandler) PostCard(rw http.ResponseWriter, rq *http.Request) {
+
+    rw.Header().Set("Content-Type", "application/json")
+}
+
+// (PUT) update card
+func (bh *boardHandler) UpdateCard(rw http.ResponseWriter, rq *http.Request) {
+
+    rw.Header().Set("Content-Type", "application/json")
+}
+
+// (DELETE) card
+func (bh *boardHandler) DeleteCard(rw http.ResponseWriter, rq *http.Request) {
 
     rw.Header().Set("Content-Type", "application/json")
 }
