@@ -32,7 +32,6 @@ func main() {
     runServer(server, serverLogger);
 }
 
-
 // Creates server router and registers all routes
 func createRouter(logger *log.Logger) *mux.Router {
     serverRouter := mux.NewRouter();
@@ -50,11 +49,10 @@ func createRouter(logger *log.Logger) *mux.Router {
 
     boardRoute.HandleFunc("/list/{id}", bh.PostCard).Methods("POST")
     boardRoute.HandleFunc("/list/{id}", bh.UpdateCard).Methods("PUT")
-    boardRoute.HandleFunc("/list/{id}/{task}", bh.UpdateCard).Methods("DELETE")
+    boardRoute.HandleFunc("/list/{id}/{task}", bh.DeleteCard).Methods("DELETE")
 
     return serverRouter;
 }
-
 
 // Runs server, until requested for quit
 func runServer(server *http.Server, serverLogger *log.Logger) {
