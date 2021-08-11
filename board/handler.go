@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"gorm.io/gorm"
 )
 
@@ -24,15 +25,57 @@ func NewHandler (l *log.Logger, db *gorm.DB) *boardHandler {
 
 // (GET) board
 func (bh *boardHandler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
-    // Log action
     bh.l.Println("GET board from:", rq.URL)
 
+    rqVars := mux.Vars(rq)
+    boardName := rqVars["board"]
+
+    var resBoard board;
+
+    // Check if exists 
+    result := bh.db.Limit(1).Where("name", boardName).Find(&resBoard)
+    if result.RowsAffected == 0 {
+        bh.l.Println("Board", boardName, "does not exist")
+        rw.WriteHeader(http.StatusBadRequest)
+        return
+    }
+
+    // Send response
+    if err := resBoard.toJSON(rw); err != nil {
+        bh.l.Println("Error with JSON marshal, ", err)
+        rw.WriteHeader(http.StatusInternalServerError)
+    }
 }
 
 // (POST) create board
 func (bh *boardHandler) CreateBoard(rw http.ResponseWriter, rq *http.Request) {
+    bh.l.Println("POST new board", rq.URL)
 
+    rqVars := mux.Vars(rq)
+    boardName := rqVars["board"]
+
+    // Check if exists 
+    result := bh.db.Limit(1).Where("name", boardName).Find(&board{})
+    if result.RowsAffected > 0 {
+        bh.l.Println("Board", boardName, "already exists")
+        rw.WriteHeader(http.StatusConflict)
+        return
+    }
+
+    // Create new
+    newBoard := board{
+        Name: boardName,
+    }
+    bh.db.Create(&newBoard)
+
+    // Send response
+    if err := newBoard.toJSON(rw); err != nil {
+        bh.l.Println("Error with JSON marshal, ", err)
+        rw.WriteHeader(http.StatusInternalServerError)
+    }
 }
+
+// (DELETE) board
 
 ///// LISTS METHODS ///////////////////////////////////////////////////////////////////////////////
 

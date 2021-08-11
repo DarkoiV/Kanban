@@ -59,13 +59,14 @@ func createRouter(logger *log.Logger, db *gorm.DB) *mux.Router {
     boardRoute := serverRouter.PathPrefix("/api/{board}").Subrouter()
 
     boardRoute.HandleFunc("", bh.GetBoard).Methods("GET")
+    boardRoute.HandleFunc("", bh.CreateBoard).Methods("POST")
 
     boardRoute.HandleFunc("/lists", bh.GetLists).Methods("GET")
     boardRoute.HandleFunc("/lists", bh.UpdateOrder).Methods("PATCH")
     boardRoute.HandleFunc("/list/{list}", bh.DeleteList).Methods("DELETE")
 
     boardRoute.HandleFunc("/list/{list}", bh.PostCard).Methods("POST")
-    boardRoute.HandleFunc("/list/{list}", bh.UpdateCard).Methods("PUT")
+    boardRoute.HandleFunc("/list/{list}/{task}", bh.UpdateCard).Methods("PUT")
     boardRoute.HandleFunc("/list/{list}/{task}", bh.DeleteCard).Methods("DELETE")
 
     return serverRouter;
