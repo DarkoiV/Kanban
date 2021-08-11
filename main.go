@@ -9,16 +9,19 @@ import (
 	"os/signal"
 	"time"
 
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+
 	"github.com/darkoiv/Kanban-Backend/board"
 	"github.com/gorilla/mux"
 )
-
 
 // Main function
 func main() {
     serverLogger := log.New(os.Stdout, "[Server Log] ", 2)
 
-    router := createRouter(serverLogger)
+    database := connectToDB(serverLogger)
+    router  := createRouter(serverLogger, database)
 
     server := &http.Server{
         Addr: ":9000",
@@ -32,12 +35,26 @@ func main() {
     runServer(server, serverLogger);
 }
 
+// Connect to DB
+func connectToDB(logger *log.Logger) *gorm.DB {
+    dsn := "user=kanban_client password=kanban4321 dbname=kanbanDB host=localhost port=5432 sslmode=disable"
+    db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+    if err != nil {
+        logger.Fatalln("Could not connect to DB")
+    }
+
+    logger.Println("Connected to postgres database")
+
+    return db
+}
+
 // Creates server router and registers all routes
-func createRouter(logger *log.Logger) *mux.Router {
+func createRouter(logger *log.Logger, db *gorm.DB) *mux.Router {
     serverRouter := mux.NewRouter();
 
     // Register board routes
-    bh := board.NewHandler(logger);
+    bh := board.NewHandler(logger, db);
 
     boardRoute := serverRouter.PathPrefix("/api/{board}").Subrouter()
 
@@ -45,11 +62,11 @@ func createRouter(logger *log.Logger) *mux.Router {
 
     boardRoute.HandleFunc("/lists", bh.GetLists).Methods("GET")
     boardRoute.HandleFunc("/lists", bh.UpdateOrder).Methods("PATCH")
-    boardRoute.HandleFunc("/list/{id}", bh.DeleteList).Methods("DELETE")
+    boardRoute.HandleFunc("/list/{list}", bh.DeleteList).Methods("DELETE")
 
-    boardRoute.HandleFunc("/list/{id}", bh.PostCard).Methods("POST")
-    boardRoute.HandleFunc("/list/{id}", bh.UpdateCard).Methods("PUT")
-    boardRoute.HandleFunc("/list/{id}/{task}", bh.DeleteCard).Methods("DELETE")
+    boardRoute.HandleFunc("/list/{list}", bh.PostCard).Methods("POST")
+    boardRoute.HandleFunc("/list/{list}", bh.UpdateCard).Methods("PUT")
+    boardRoute.HandleFunc("/list/{list}/{task}", bh.DeleteCard).Methods("DELETE")
 
     return serverRouter;
 }

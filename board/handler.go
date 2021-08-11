@@ -1,19 +1,23 @@
 package board
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+
+	"gorm.io/gorm"
 )
 
 // Board handler
 type boardHandler struct {
     l *log.Logger
+    db *gorm.DB
 }
 
 // Create board handler
-func NewHandler (l *log.Logger) *boardHandler {
-    return &boardHandler{l}
+func NewHandler (l *log.Logger, db *gorm.DB) *boardHandler {
+    l.Println("Auto migrating database")
+    db.AutoMigrate(&board{}, &cardList{}, &card{})
+    return &boardHandler{l, db}
 }
 
 ///// BOARD METHODS ///////////////////////////////////////////////////////////////////////////////
@@ -23,11 +27,10 @@ func (bh *boardHandler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
     // Log action
     bh.l.Println("GET board from:", rq.URL)
 
-    // Write content type
-    rw.Header().Set("Content-Type", "application/json")
+}
 
-    // TODO Load data and convert to JSON
-    fmt.Fprint(rw, "{\"msg\":\"TEST\" }")
+// (POST) create board
+func (bh *boardHandler) CreateBoard(rw http.ResponseWriter, rq *http.Request) {
 
 }
 
