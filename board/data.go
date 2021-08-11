@@ -37,6 +37,12 @@ func (b *board) toJSON(w io.Writer) error {
     return e.Encode(b)
 }
 
+// Create board struct from JSON
+func (b *board) fromJSON(r io.Reader) error {
+    e := json.NewDecoder(r)
+    return e.Decode(b)
+}
+
 // Create JSON representation from card list, and write it to io.Writer
 func (l *cardList) toJSON(w io.Writer) error {
     e := json.NewEncoder(w)

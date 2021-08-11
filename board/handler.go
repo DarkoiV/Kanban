@@ -26,16 +26,17 @@ func NewHandler (l *log.Logger, db *gorm.DB) *boardHandler {
 // (GET) board
 func (bh *boardHandler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
     bh.l.Println("GET board from:", rq.URL)
+    rw.Header().Set("Content-Type", "application/json")
 
     rqVars := mux.Vars(rq)
-    boardName := rqVars["board"]
+    boardID := rqVars["boardID"]
 
     var resBoard board;
 
     // Check if exists 
-    result := bh.db.Limit(1).Where("name", boardName).Find(&resBoard)
+    result := bh.db.Limit(1).Where("id = ?", boardID).Find(&resBoard)
     if result.RowsAffected == 0 {
-        bh.l.Println("Board", boardName, "does not exist")
+        bh.l.Println("Board with ID: ", boardID, "does not exist")
         rw.WriteHeader(http.StatusBadRequest)
         return
     }
@@ -45,27 +46,17 @@ func (bh *boardHandler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
         bh.l.Println("Error with JSON marshal, ", err)
         rw.WriteHeader(http.StatusInternalServerError)
     }
+
 }
 
 // (POST) create board
 func (bh *boardHandler) CreateBoard(rw http.ResponseWriter, rq *http.Request) {
     bh.l.Println("POST new board", rq.URL)
-
-    rqVars := mux.Vars(rq)
-    boardName := rqVars["board"]
-
-    // Check if exists 
-    result := bh.db.Limit(1).Where("name", boardName).Find(&board{})
-    if result.RowsAffected > 0 {
-        bh.l.Println("Board", boardName, "already exists")
-        rw.WriteHeader(http.StatusConflict)
-        return
-    }
+    rw.Header().Set("Content-Type", "application/json")
 
     // Create new
-    newBoard := board{
-        Name: boardName,
-    }
+    var newBoard board;
+    newBoard.fromJSON(rq.Body);
     bh.db.Create(&newBoard)
 
     // Send response
@@ -73,6 +64,7 @@ func (bh *boardHandler) CreateBoard(rw http.ResponseWriter, rq *http.Request) {
         bh.l.Println("Error with JSON marshal, ", err)
         rw.WriteHeader(http.StatusInternalServerError)
     }
+
 }
 
 // (DELETE) board
