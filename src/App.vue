@@ -1,108 +1,17 @@
 <template>
   <div class="main-body">
-    <List v-for="taskList in boardLists"
-      :pos="taskList.pos"
-      :title="taskList.title"
-      :key="taskList.id"
-      :tasks="taskList.list" 
-      @update-description="updateDescription"
-    />
+    <Board/>
   </div>
 </template>
 
 <script>
-import List from './components/List.vue'
+import Board from './components/Board.vue'
 
 export default {
   name: 'App',
 
   components: {
-    List
-  },
-
-  // Store task list(s)
-  data() {
-    return { 
-      boardLists: []
-    }
-  },
-  
-  // TMP populate multiple task list with predefined tasks
-  created() {
-    this.boardLists = [
-      {
-        pos: 0,
-        title: "TO DO",
-        list: [
-          {
-            id: 1,
-            pos: 0,
-            description: "First task!",
-            due: "2020/01/01"
-          },
-          { 
-            id: 2,
-            pos: 1,
-            description: "Second task!",
-            due: "2020/01/01"
-          },
-          {
-            id: 3,
-            pos: 2,
-            description: "LOREM IPSUM, I DO NOT REMEMBER FURTHER!!!",
-            due: "2021/08/07"
-          },
-          {
-            id: 4,
-            pos: 3,
-            description: "Form is nice \n I LIKE FORM!",
-            due: "2021/08/07"
-          }
-        ]
-      },
-      {
-        pos: 1,
-        title: "In Progress",
-        list: [
-          {
-            id: 1,
-            pos: 0,
-            description: "First task!",
-            due: "2020/01/01"
-          },
-          { 
-            id: 2,
-            pos: 2,
-            description: "Second task!",
-            due: "2020/01/01"
-          },
-          {
-            id: 3,
-            pos: 1,
-            description: "LOREM IPSUM, I DO NOT REMEMBER FURTHER!!!",
-            due: "2021/08/07"
-          },
-          {
-            id: 4,
-            pos: 3,
-            description: "Form is nice \n I LIKE FORM!",
-            due: "2021/08/07"
-          }
-        ]
-      }
-    ]
-  },
-
-  methods: {
-    // Update description of task
-    updateDescription(listPos, taskID, newDescription) {
-      this.boardLists[listPos].list.map(task =>{
-        if(task.id == taskID){
-          task.description = newDescription;
-        }
-        return task;
-      })
-    }
+    Board
   },
 
 }

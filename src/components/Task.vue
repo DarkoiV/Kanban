@@ -1,5 +1,5 @@
 <template>
-  <div class="task">
+  <div class="task" ref="taskContainer" draggable="true">
     <p
       class="cardText"
       v-show="editable" 
@@ -14,6 +14,7 @@
         ref="textInput"
         @keydown.enter.shift.exact.prevent
         @keydown.enter.shift.exact="saveEdit"
+        @keydown.escape.exact="saveEdit"
         @blur="saveEdit"
         @input="resize"
       /> 
@@ -44,6 +45,7 @@ export default {
     editTask() {
       this.formEdit = this.taskObject.description;
       this.editable = !this.editable;
+      this.$refs.taskContainer.draggable = false;
 
       this.$nextTick(() => {
         // Resize it
@@ -58,6 +60,7 @@ export default {
     // Send edited task to parent
     saveEdit() {
       this.editable = !this.editable;
+      this.$refs.taskContainer.draggable = true;
 
       // Check if edition changed anything
       if(this.formEdit != this.taskObject.description) {
@@ -80,9 +83,13 @@ export default {
 
 <style scope>
 .task {
+  display: flex;
+  flex-direction: column;
+
   background-color: white;
   border-radius: 2px;
   font-size: 14px;
+  min-height: 75px;
 
   padding: 5px;
   padding-top: 10px;
@@ -95,6 +102,7 @@ textarea {
   resize: none; 
 
   width: calc(100% - 12px);
+  min-height: 60px;
   margin: 0;
   padding: 0;
 
@@ -102,6 +110,7 @@ textarea {
 }
 textarea:focus {
   outline: none;
+  outline-width: 0;
 }
 .cardText {
   width: calc(100% - 14px);
@@ -111,5 +120,6 @@ textarea:focus {
 .due {
   font-size: 70%;
   text-align: right;
+  margin-top: auto;
 }
 </style>
