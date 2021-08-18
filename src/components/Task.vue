@@ -58,8 +58,14 @@ export default {
     // Send edited task to parent
     saveEdit() {
       this.editable = !this.editable;
-      console.log("TASK:", this.taskObject.id, this.formEdit);
-      this.$emit('update-description', this.taskObject.id, this.formEdit)
+
+      // Check if edition changed anything
+      if(this.formEdit != this.taskObject.description) {
+        console.log("TASK:", this.taskObject.id, this.formEdit);
+        this.$emit('update-description', this.taskObject.id, this.formEdit)
+      } else {
+        console.log("Task have not changed")
+      }
     },
 
     // Resize text area

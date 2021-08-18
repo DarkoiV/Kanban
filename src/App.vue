@@ -36,21 +36,25 @@ export default {
         list: [
           {
             id: 1,
+            pos: 0,
             description: "First task!",
             due: "2020/01/01"
           },
           { 
             id: 2,
+            pos: 1,
             description: "Second task!",
             due: "2020/01/01"
           },
           {
             id: 3,
+            pos: 2,
             description: "LOREM IPSUM, I DO NOT REMEMBER FURTHER!!!",
             due: "2021/08/07"
           },
           {
             id: 4,
+            pos: 3,
             description: "Form is nice \n I LIKE FORM!",
             due: "2021/08/07"
           }
@@ -62,21 +66,25 @@ export default {
         list: [
           {
             id: 1,
+            pos: 0,
             description: "First task!",
             due: "2020/01/01"
           },
           { 
             id: 2,
+            pos: 2,
             description: "Second task!",
             due: "2020/01/01"
           },
           {
             id: 3,
+            pos: 1,
             description: "LOREM IPSUM, I DO NOT REMEMBER FURTHER!!!",
             due: "2021/08/07"
           },
           {
             id: 4,
+            pos: 3,
             description: "Form is nice \n I LIKE FORM!",
             due: "2021/08/07"
           }
@@ -87,10 +95,10 @@ export default {
 
   methods: {
     // Update description of task
-    updateDescription(listPos, taskID, formEdit) {
+    updateDescription(listPos, taskID, newDescription) {
       this.boardLists[listPos].list.map(task =>{
         if(task.id == taskID){
-          task.description = formEdit;
+          task.description = newDescription;
         }
         return task;
       })

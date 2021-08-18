@@ -21,8 +21,8 @@ export default {
   },
 
   methods: {
-    updateDescription(id, formEdit){
-      this.$emit('update-description', this.pos, id, formEdit);
+    updateDescription(taskID, newDescription){
+      this.$emit('update-description', this.pos, taskID, newDescription);
     }
   },
 
