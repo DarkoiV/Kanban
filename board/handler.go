@@ -36,7 +36,7 @@ func (bh *boardHandler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
     // Check if exists 
     result := bh.db.Limit(1).Where("id = ?", boardID).Find(&resBoard)
     if result.RowsAffected == 0 {
-        bh.l.Println("Board with ID: ", boardID, "does not exist")
+        bh.l.Println("Board with ID:", boardID, "does not exist")
         rw.WriteHeader(http.StatusBadRequest)
         return
     }

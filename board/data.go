@@ -12,7 +12,6 @@ type card struct {
     Description     string      `json:"description"`
     DueDate         string      `json:"dueDate"`
     ListID          uint        `json:"-"`
-
 }
 
 // List of cards
