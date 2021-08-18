@@ -53,23 +53,21 @@ func connectToDB(logger *log.Logger) *gorm.DB {
 func createRouter(logger *log.Logger, db *gorm.DB) *mux.Router {
     serverRouter := mux.NewRouter();
 
-    // Register routes
+    // Create board handler
     bh := board.NewHandler(logger, db);
-
     serverRouter.HandleFunc("/api/new", bh.CreateBoard).Methods("POST")
 
+    // Create board specific route
     boardRoute := serverRouter.PathPrefix("/api/{boardID:[0-9]+}").Subrouter()
-
     boardRoute.HandleFunc("", bh.GetBoard).Methods("GET")
+    boardRoute.HandleFunc("/lists", bh.UpdateLists).Methods("PATCH")
 
-    boardRoute.HandleFunc("/lists", bh.UpdateOrder).Methods("PATCH")
-
+    // Create list specific route
     listRoute := boardRoute.PathPrefix("/{listID:[0-9]+}").Subrouter()
     listRoute.HandleFunc("", bh.DeleteList).Methods("DELETE")
-
-    listRoute.HandleFunc("", bh.PostCard).Methods("POST")
-    listRoute.HandleFunc("/{cardID:[0-9]+}", bh.UpdateCard).Methods("PUT")
-    listRoute.HandleFunc("/{cardID:[0-9]+}", bh.DeleteCard).Methods("DELETE")
+    listRoute.HandleFunc("", bh.PostTask).Methods("POST")
+    listRoute.HandleFunc("/{taskID:[0-9]+}", bh.UpdateTask).Methods("PUT")
+    listRoute.HandleFunc("/{taskID:[0-9]+}", bh.DeleteTask).Methods("DELETE")
 
     return serverRouter;
 }

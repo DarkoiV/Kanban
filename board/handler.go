@@ -17,7 +17,7 @@ type boardHandler struct {
 // Create board handler
 func NewHandler (l *log.Logger, db *gorm.DB) *boardHandler {
     l.Println("Auto migrating database")
-    db.AutoMigrate(&board{}, &cardList{}, &card{})
+    db.AutoMigrate(&board{}, &taskList{}, &task{})
     return &boardHandler{l, db}
 }
 
@@ -78,8 +78,8 @@ func (bh *boardHandler) GetLists(rw http.ResponseWriter, rq *http.Request) {
     rw.Header().Set("Content-Type", "application/json")
 }
 
-// (PATCH) Update order of cards in lists
-func (bh *boardHandler) UpdateOrder(rw http.ResponseWriter, rq *http.Request) {
+// (PATCH) Update lists
+func (bh *boardHandler) UpdateLists(rw http.ResponseWriter, rq *http.Request) {
 
     rw.Header().Set("Content-Type", "application/json")
 }
@@ -92,20 +92,20 @@ func (bh *boardHandler) DeleteList(rw http.ResponseWriter, rq *http.Request) {
 
 ///// CARDS METHODS ///////////////////////////////////////////////////////////////////////////////
 
-// (POST) Create new card
-func (bh *boardHandler) PostCard(rw http.ResponseWriter, rq *http.Request) {
+// (POST) Create new task
+func (bh *boardHandler) PostTask(rw http.ResponseWriter, rq *http.Request) {
 
     rw.Header().Set("Content-Type", "application/json")
 }
 
-// (PUT) update card
-func (bh *boardHandler) UpdateCard(rw http.ResponseWriter, rq *http.Request) {
+// (PUT) update task
+func (bh *boardHandler) UpdateTask(rw http.ResponseWriter, rq *http.Request) {
 
     rw.Header().Set("Content-Type", "application/json")
 }
 
-// (DELETE) card
-func (bh *boardHandler) DeleteCard(rw http.ResponseWriter, rq *http.Request) {
+// (DELETE) task
+func (bh *boardHandler) DeleteTask(rw http.ResponseWriter, rq *http.Request) {
 
     rw.Header().Set("Content-Type", "application/json")
 }

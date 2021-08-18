@@ -5,8 +5,8 @@ import (
 	"io"
 )
 
-// Card data
-type card struct {
+// Task data
+type task struct {
     ID              uint        `json:"id"`
     Pos             uint        `json:"pos"`
     Description     string      `json:"description"`
@@ -14,12 +14,12 @@ type card struct {
     ListID          uint        `json:"-"`
 }
 
-// List of cards
-type cardList struct {
+// List of tasks
+type taskList struct {
     ID              uint        `json:"id"`
     Pos             uint        `json:"pos"`
     Title           string      `json:"title"`
-    Cards           []card      `json:"cards" gorm:"foreignKey:ListID"`
+    Tasks           []task      `json:"tasks" gorm:"foreignKey:ListID"`
     BoardID         uint        `json:"-"`
 }
 
@@ -27,7 +27,7 @@ type cardList struct {
 type board struct {
     ID              uint        `json:"id"`
     Name            string      `json:"name"`
-    Lists           []cardList  `json:"lists" gorm:"foreignKey:BoardID"`
+    Lists           []taskList  `json:"lists" gorm:"foreignKey:BoardID"`
 }
 
 // Create JSON representation from board, and write it to io.Writer
@@ -42,14 +42,14 @@ func (b *board) fromJSON(r io.Reader) error {
     return e.Decode(b)
 }
 
-// Create JSON representation from card list, and write it to io.Writer
-func (l *cardList) toJSON(w io.Writer) error {
+// Create JSON representation from task list, and write it to io.Writer
+func (l *taskList) toJSON(w io.Writer) error {
     e := json.NewEncoder(w)
     return e.Encode(l)
 }
 
-// Create JSON representation from card, and write it to io.Writer
-func (c *card) toJSON(w io.Writer) error {
+// Create JSON representation from task, and write it to io.Writer
+func (t *task) toJSON(w io.Writer) error {
     e := json.NewEncoder(w)
-    return e.Encode(c)
+    return e.Encode(t)
 }
