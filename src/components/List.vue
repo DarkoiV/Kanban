@@ -54,6 +54,5 @@ export default {
   padding-bottom: 10px;
 
   width: 300px;
-  overflow: auto;
 }
 </style>

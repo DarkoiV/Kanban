@@ -1,21 +1,6 @@
 <template>
-  <div class="main-body">
-    <Board/>
-  </div>
+  <router-view/>
 </template>
-
-<script>
-import Board from './components/Board.vue'
-
-export default {
-  name: 'App',
-
-  components: {
-    Board
-  },
-
-}
-</script>
 
 <style>
 * {
@@ -27,10 +12,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   padding: 30px;
-}
-.main-body {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
 }
 </style>

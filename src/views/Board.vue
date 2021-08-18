@@ -1,15 +1,17 @@
-<template>  
-    <List v-for="taskList in boardLists"
-      :pos="taskList.pos"
-      :title="taskList.title"
-      :key="taskList.id"
-      :tasks="taskList.tasks" 
+<template>
+  <div class="main-body">
+    <List v-for="list in lists"
+      :pos="list.pos"
+      :title="list.title"
+      :key="list.id"
+      :tasks="list.tasks" 
       @update-description="updateDescription"
     />
+  </div>
 </template>
 
 <script>
-import List from './List.vue'
+import List from '../components/List.vue'
 
 export default {
   name: 'Board',
@@ -20,13 +22,15 @@ export default {
 
   data() {
     return { 
-      boardLists: []
+      id: Number,
+      name: String,
+      lists: []
     }
   },
   
   // TMP populate multiple task list with predefined tasks
   created() {
-    this.boardLists = [
+    this.lists = [
       {
         pos: 0,
         title: "TO DO",
@@ -90,7 +94,7 @@ export default {
     ]
 
     // Sort tasks
-    this.boardLists.forEach(list => {
+    this.lists.forEach(list => {
       list.tasks.sort( (t1, t2) => t1.pos - t2.pos)
     })
   },
@@ -98,7 +102,7 @@ export default {
   methods: {
     // Update description of task
     updateDescription(listPos, taskID, newDescription) {
-      this.boardLists[listPos].tasks.map(task =>{
+      this.lists[listPos].tasks.map(task =>{
         if(task.id == taskID){
           task.description = newDescription;
         }
@@ -109,3 +113,11 @@ export default {
   },
 }
 </script>
+
+<style scope>
+.main-body {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+</style>

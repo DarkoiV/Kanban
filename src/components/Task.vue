@@ -1,9 +1,8 @@
 <template>
-  <div class="task" ref="taskContainer" draggable="true">
+  <div class="task" ref="taskContainer" draggable="true" @dblclick="editTask">
     <p
       class="cardText"
       v-show="editable" 
-      @dblclick="editTask"
     > 
       {{ taskObject.description }}
     </p>
@@ -101,7 +100,7 @@ textarea {
   font-weight: 100;
   resize: none; 
 
-  width: calc(100% - 12px);
+  width: 100%;
   min-height: 60px;
   margin: 0;
   padding: 0;
@@ -113,7 +112,7 @@ textarea:focus {
   outline-width: 0;
 }
 .cardText {
-  width: calc(100% - 14px);
+  width: 100%;
   white-space: pre-wrap;
   word-break: break-word;
 }
