@@ -3,9 +3,10 @@ import Board from '../views/Board.vue'
 
 const routes = [
   {
-    path: '/',
+    path: '/board/:id',
     name: 'Home',
-    component: Board
+    component: Board,
+    props: true
   },
 ]
 

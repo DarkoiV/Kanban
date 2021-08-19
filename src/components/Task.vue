@@ -2,12 +2,12 @@
   <div class="task" ref="taskContainer" draggable="true" @dblclick="editTask">
     <p
       class="cardText"
-      v-show="editable" 
+      v-show="!editable" 
     > 
       {{ taskObject.description }}
     </p>
 
-    <form v-show="!editable" class="task-form"> 
+    <form v-show="editable" class="task-form"> 
       <textarea 
         v-model="formEdit"
         ref="textInput"
@@ -39,11 +39,15 @@ export default {
     }
   },
 
+  created() {
+    this.editable = false;
+  },
+
   methods: {
     // Start editing task
     editTask() {
       this.formEdit = this.taskObject.description;
-      this.editable = !this.editable;
+      this.editable = true;
       this.$refs.taskContainer.draggable = false;
 
       this.$nextTick(() => {
@@ -58,7 +62,7 @@ export default {
 
     // Send edited task to parent
     saveEdit() {
-      this.editable = !this.editable;
+      this.editable = false;
       this.$refs.taskContainer.draggable = true;
 
       // Check if edition changed anything
@@ -68,6 +72,9 @@ export default {
       } else {
         console.log("Task have not changed")
       }
+
+      // Blur focus
+      this.$refs.textInput.blur()
     },
 
     // Resize text area

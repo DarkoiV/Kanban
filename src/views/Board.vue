@@ -1,4 +1,5 @@
 <template>
+  <BoardHeader :boardName="name"/> 
   <div class="main-body">
     <List v-for="list in lists"
       :pos="list.pos"
@@ -12,17 +13,22 @@
 
 <script>
 import List from '../components/List.vue'
+import BoardHeader from '../components/BoardHeader.vue'
 
 export default {
   name: 'Board',
 
+  props: {
+    id: Number,
+  },
+
   components: {
-    List
+    List,
+    BoardHeader
   },
 
   data() {
     return { 
-      id: Number,
       name: String,
       lists: []
     }
@@ -30,6 +36,7 @@ export default {
   
   // TMP populate multiple task list with predefined tasks
   created() {
+    this.name = "Name of Board " + this.id
     this.lists = [
       {
         pos: 0,
@@ -119,5 +126,6 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  padding: 20px;
 }
 </style>
