@@ -1,5 +1,5 @@
 <template>
-  <div class="task" ref="taskContainer" draggable="true" @dblclick="editTask">
+  <div class="task shadowBox" ref="taskContainer" draggable="true" @dblclick="editTask">
     <p
       class="cardText"
       v-show="!editable" 
@@ -99,7 +99,7 @@ export default {
 
   padding: 5px;
   padding-top: 10px;
-  margin-bottom: 5px;
+  margin-bottom: 7px;
 }
 textarea {
   font-family: Avenir, Helvetica, Arial, sans-serif;

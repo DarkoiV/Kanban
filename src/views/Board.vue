@@ -126,6 +126,6 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  padding: 20px;
+  padding: 25px;
 }
 </style>

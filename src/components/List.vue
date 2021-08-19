@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="list shadowBox">
     <p id="title"> {{title}} </p>
     <Task 
       v-for="task in tasks" 
@@ -46,10 +46,10 @@ export default {
   align-self: flex-start;
 
   background-color: antiquewhite;
-  border-radius: 3px;
-  margin: 5px;
+  border-radius: 5px;
+  margin: 10px;
 
-  padding: 5px;
+  padding: 7px;
   padding-top: 0px;
   padding-bottom: 10px;
 
