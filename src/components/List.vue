@@ -7,7 +7,7 @@
       :taskObject = "task"
       @update-description="updateDescription"
       />
-    <p id="newtask" @click="newTask"> Create new task </p>
+    <span id="newtask" @click="newTask"> Create new task </span>
   </div>
 </template>
 
@@ -46,6 +46,8 @@ export default {
   font-size: 20px;
 
   margin: 5px;
+
+  user-select: none;
 }
 .list {
   align-self: flex-start;

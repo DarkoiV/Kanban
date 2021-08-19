@@ -91,6 +91,7 @@ export default {
 .task {
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 
   background-color: white;
   border-radius: 2px;
@@ -125,6 +126,7 @@ textarea:focus {
   width: 100%;
   white-space: pre-wrap;
   word-break: break-word;
+  user-select: none;
 }
 .createdAt {
   font-size: 70%;
