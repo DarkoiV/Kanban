@@ -19,7 +19,7 @@
       /> 
     </form>
 
-    <p class="due"> {{ taskObject.due }} </p>
+    <p class="createdAt"> {{ taskObject.createdAt.toDateString() }} </p>
   </div>
 </template>
 
@@ -101,6 +101,9 @@ export default {
   padding-top: 10px;
   margin-bottom: 7px;
 }
+.task:hover {
+  transform: scale(1.02);
+}
 textarea {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -123,7 +126,7 @@ textarea:focus {
   white-space: pre-wrap;
   word-break: break-word;
 }
-.due {
+.createdAt {
   font-size: 70%;
   text-align: right;
   margin-top: auto;

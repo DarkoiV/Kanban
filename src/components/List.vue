@@ -7,6 +7,7 @@
       :taskObject = "task"
       @update-description="updateDescription"
       />
+    <p id="newtask" @click="newTask"> Create new task </p>
   </div>
 </template>
 
@@ -21,8 +22,12 @@ export default {
   },
 
   methods: {
-    updateDescription(taskID, newDescription){
+    updateDescription(taskID, newDescription) {
       this.$emit('update-description', this.pos, taskID, newDescription);
+    },
+
+    newTask() {
+      this.$emit("new-task", this.pos);
     }
   },
 
@@ -40,7 +45,7 @@ export default {
   font-weight: 500;
   font-size: 20px;
 
-  margin: 0px;
+  margin: 5px;
 }
 .list {
   align-self: flex-start;
@@ -51,8 +56,19 @@ export default {
 
   padding: 7px;
   padding-top: 0px;
-  padding-bottom: 10px;
 
+  min-width: 300px;
   width: 300px;
+}
+#newtask {
+  margin-top: 10px;
+  margin-left: 3px;
+  user-select: none;
+
+  font-weight: bold;
+}
+#newtask:hover {
+  color: salmon;
+  cursor: pointer;
 }
 </style>

@@ -7,7 +7,11 @@
       :key="list.id"
       :tasks="list.tasks" 
       @update-description="updateDescription"
+      @new-task="newTask"
     />
+    <div>
+    <p id="newlist" @click="newList"> Create new list </p>
+    </div>
   </div>
 </template>
 
@@ -46,25 +50,25 @@ export default {
             id: 1,
             pos: 0,
             description: "First task!",
-            due: "2020/01/01"
+            createdAt: new Date()
           },
           { 
             id: 2,
             pos: 1,
             description: "Second task!",
-            due: "2020/01/01"
+            createdAt: new Date()
           },
           {
             id: 3,
             pos: 2,
             description: "LOREM IPSUM, I DO NOT REMEMBER FURTHER!!!",
-            due: "2021/08/07"
+            createdAt: new Date()
           },
           {
             id: 4,
             pos: 3,
             description: "Form is nice \n I LIKE FORM!",
-            due: "2021/08/07"
+            createdAt: new Date()
           }
         ]
       },
@@ -76,25 +80,25 @@ export default {
             id: 1,
             pos: 0,
             description: "First task!",
-            due: "2020/01/01"
+            createdAt: new Date()
           },
           { 
             id: 2,
             pos: 2,
             description: "Second task!",
-            due: "2020/01/01"
+            createdAt: new Date()
           },
           {
             id: 3,
             pos: 1,
             description: "LOREM IPSUM, I DO NOT REMEMBER FURTHER!!!",
-            due: "2021/08/07"
+            createdAt: new Date()
           },
           {
             id: 4,
             pos: 3,
             description: "Form is nice \n I LIKE FORM!",
-            due: "2021/08/07"
+            createdAt: new Date()
           }
         ]
       }
@@ -107,7 +111,6 @@ export default {
   },
 
   methods: {
-    // Update description of task
     updateDescription(listPos, taskID, newDescription) {
       this.lists[listPos].tasks.map(task =>{
         if(task.id == taskID){
@@ -115,6 +118,36 @@ export default {
         }
         return task;
       })
+    },
+    
+    newTask(listPos) {
+      //TODO get ID from server
+      const newPos = this.lists[listPos].tasks.length;
+      const newID = newPos + listPos * 1000;
+
+      const newTask = {
+        id: newID,
+        pos: newPos,
+        description: "New task, double click to edit",
+        createdAt: new Date()
+      }
+      console.log("New task", newTask)
+      this.lists[listPos].tasks.push(newTask)
+    },
+
+    newList() {
+      const newPos = this.lists.length
+      const newID = newPos
+
+      const newList = {
+        id: newID,
+        pos: newPos,
+        title: "New List",
+        tasks: []
+      }
+
+      console.log("New list", newList)
+      this.lists.push(newList)
     }
 
   },
@@ -126,6 +159,20 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+
   padding: 25px;
+  padding-top: 50px;
+}
+#newlist {
+  font-family: Monaco, monospace;
+  font-weight: 500;
+  font-size: 20px;
+
+  min-width: 300px;
+  margin: 15px;
+}
+#newlist:hover {
+  color: salmon;
+  cursor: pointer;
 }
 </style>

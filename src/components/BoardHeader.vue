@@ -18,6 +18,9 @@ export default {
 
 <style scope>
 header {
+  position: fixed;
+  width: 100vw;
+
   background: antiquewhite;
   padding: 5px;
 }
