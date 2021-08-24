@@ -50,16 +50,19 @@ func connectToDB(logger *log.Logger) *gorm.DB {
     return db
 }
 
-// Creates server router and registers all routes
+// Creates server router and registers routes
 func createRouter(logger *log.Logger, db *gorm.DB) *mux.Router {
     serverRouter := mux.NewRouter();
 
+    // Create API route
+    apiRoute := serverRouter.PathPrefix("/api").Subrouter()
+
     // Create board handler
     bh := board.NewHandler(logger, db);
-    serverRouter.HandleFunc("/api/new", bh.CreateBoard).Methods("POST")
+    apiRoute.HandleFunc("/new", bh.CreateBoard).Methods("POST")
 
     // Create board specific route
-    boardRoute := serverRouter.PathPrefix("/api/{boardID:[0-9]+}").Subrouter()
+    boardRoute := apiRoute.PathPrefix("/{boardID:[0-9]+}").Subrouter()
     boardRoute.HandleFunc("", bh.GetBoard).Methods("GET")
     boardRoute.HandleFunc("/lists", bh.UpdateLists).Methods("PATCH")
 
@@ -70,9 +73,14 @@ func createRouter(logger *log.Logger, db *gorm.DB) *mux.Router {
     listRoute.HandleFunc("/{taskID:[0-9]+}", bh.UpdateTask).Methods("PUT")
     listRoute.HandleFunc("/{taskID:[0-9]+}", bh.DeleteTask).Methods("DELETE")
 
-    // Add single page app
+    // Catch bad API calls
+    serverRouter.PathPrefix("/api").HandlerFunc(func(rw http.ResponseWriter, rq *http.Request){
+        http.Error(rw, "", http.StatusBadRequest)
+    })
+
+    // Serve single page app
     fh := front.NewHandler(logger, "dist", "index.html")
-    serverRouter.PathPrefix("/").Handler(fh)
+    serverRouter.PathPrefix("/").Handler(fh).Methods("GET")
 
     return serverRouter;
 }
