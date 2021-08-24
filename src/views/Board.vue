@@ -32,17 +32,17 @@ export default {
   },
 
   data() {
-    return { 
+    return {
+      apiURI: String,
       name: String,
       lists: []
     }
   },
   
   created() {
-    this.name = "Name of Board " + this.id
-    const boardDataUrl = "http://" + location.host + "/api/" + this.id
-    console.log(boardDataUrl)
-    fetch(boardDataUrl)
+    this.apiURI = location.protocol + "//" + location.host + "/api/" + this.id
+
+    fetch(apiURI)
       .then(response => response.json())
       .then(data => {
         this.name = data.name

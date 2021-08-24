@@ -19,7 +19,7 @@
       /> 
     </form>
 
-    <p class="createdAt"> {{ taskObject.createdAt.toDateString() }} </p>
+    <p class="createdAt"> {{ taskObject.createdAt }} </p>
   </div>
 </template>
 
