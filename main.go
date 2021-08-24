@@ -13,15 +13,16 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/darkoiv/Kanban-Backend/board"
+	"github.com/darkoiv/Kanban-Backend/front"
 	"github.com/gorilla/mux"
 )
 
 // Main function
 func main() {
-    serverLogger := log.New(os.Stdout, "[Server Log] ", 2)
+    logger := log.New(os.Stdout, "[Server Log] ", 2)
 
-    database := connectToDB(serverLogger)
-    router  := createRouter(serverLogger, database)
+    database := connectToDB(logger)
+    router  := createRouter(logger, database)
 
     server := &http.Server{
         Addr: ":9000",
@@ -32,7 +33,7 @@ func main() {
 
     }
 
-    runServer(server, serverLogger);
+    runServer(server, logger);
 }
 
 // Connect to DB
@@ -69,18 +70,22 @@ func createRouter(logger *log.Logger, db *gorm.DB) *mux.Router {
     listRoute.HandleFunc("/{taskID:[0-9]+}", bh.UpdateTask).Methods("PUT")
     listRoute.HandleFunc("/{taskID:[0-9]+}", bh.DeleteTask).Methods("DELETE")
 
+    // Add single page app
+    fh := front.NewHandler(logger, "dist", "index.html")
+    serverRouter.PathPrefix("/").Handler(fh)
+
     return serverRouter;
 }
 
 // Runs server, until requested for quit
-func runServer(server *http.Server, serverLogger *log.Logger) {
+func runServer(server *http.Server, logger *log.Logger) {
 
     // Start server
-    serverLogger.Printf("Starting server on port %s . . . ", server.Addr)
+    logger.Printf("Starting server on port %s . . . ", server.Addr)
     go func() {
         // Check fo server errors
         err := server.ListenAndServe(); if err != nil {
-            serverLogger.Println(err);
+            logger.Println(err);
         }
     }()
 
@@ -91,16 +96,16 @@ func runServer(server *http.Server, serverLogger *log.Logger) {
     // Wait for signal
     sig := <-osChannel
     fmt.Println();
-    serverLogger.Println("Requestes shutdown, signal:", sig)
+    logger.Println("Requestes shutdown, signal:", sig)
 
     // Graceful shutdown
     ctx, cancel := context.WithTimeout(context.Background(), 30 * time.Second)
     if err := server.Shutdown(ctx); err != nil {
-        serverLogger.Fatalln("Server didn't shutdown properly:",err)
+        logger.Fatalln("Server didn't shutdown properly:",err)
     }
     defer func(){
         cancel()
     }()
 
-    serverLogger.Println("Server shutdown properly")
+    logger.Println("Server shutdown properly")
 }

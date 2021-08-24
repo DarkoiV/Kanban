@@ -9,22 +9,22 @@ import (
 )
 
 // Board handler
-type boardHandler struct {
+type handler struct {
     l *log.Logger
     db *gorm.DB
 }
 
 // Create board handler
-func NewHandler (l *log.Logger, db *gorm.DB) *boardHandler {
+func NewHandler (l *log.Logger, db *gorm.DB) *handler {
     l.Println("Auto migrating database")
     db.AutoMigrate(&board{}, &taskList{}, &task{})
-    return &boardHandler{l, db}
+    return &handler{l, db}
 }
 
 ///// BOARD METHODS ///////////////////////////////////////////////////////////////////////////////
 
 // (GET) board
-func (bh *boardHandler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
+func (bh handler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
     bh.l.Println("GET board from:", rq.URL)
     rw.Header().Set("Content-Type", "application/json")
 
@@ -50,7 +50,7 @@ func (bh *boardHandler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
 }
 
 // (POST) create board
-func (bh *boardHandler) CreateBoard(rw http.ResponseWriter, rq *http.Request) {
+func (bh handler) CreateBoard(rw http.ResponseWriter, rq *http.Request) {
     bh.l.Println("POST new board", rq.URL)
     rw.Header().Set("Content-Type", "application/json")
 
@@ -72,20 +72,20 @@ func (bh *boardHandler) CreateBoard(rw http.ResponseWriter, rq *http.Request) {
 ///// LISTS METHODS ///////////////////////////////////////////////////////////////////////////////
 
 // (GET) lists on board
-func (bh *boardHandler) GetLists(rw http.ResponseWriter, rq *http.Request) {
+func (bh handler) GetLists(rw http.ResponseWriter, rq *http.Request) {
 
 
     rw.Header().Set("Content-Type", "application/json")
 }
 
 // (PATCH) Update lists
-func (bh *boardHandler) UpdateLists(rw http.ResponseWriter, rq *http.Request) {
+func (bh handler) UpdateLists(rw http.ResponseWriter, rq *http.Request) {
 
     rw.Header().Set("Content-Type", "application/json")
 }
 
 // (DELETE) list from board
-func (bh *boardHandler) DeleteList(rw http.ResponseWriter, rq *http.Request) {
+func (bh handler) DeleteList(rw http.ResponseWriter, rq *http.Request) {
 
     rw.Header().Set("Content-Type", "application/json")
 }
@@ -93,19 +93,19 @@ func (bh *boardHandler) DeleteList(rw http.ResponseWriter, rq *http.Request) {
 ///// CARDS METHODS ///////////////////////////////////////////////////////////////////////////////
 
 // (POST) Create new task
-func (bh *boardHandler) PostTask(rw http.ResponseWriter, rq *http.Request) {
+func (bh handler) PostTask(rw http.ResponseWriter, rq *http.Request) {
 
     rw.Header().Set("Content-Type", "application/json")
 }
 
 // (PUT) update task
-func (bh *boardHandler) UpdateTask(rw http.ResponseWriter, rq *http.Request) {
+func (bh handler) UpdateTask(rw http.ResponseWriter, rq *http.Request) {
 
     rw.Header().Set("Content-Type", "application/json")
 }
 
 // (DELETE) task
-func (bh *boardHandler) DeleteTask(rw http.ResponseWriter, rq *http.Request) {
+func (bh handler) DeleteTask(rw http.ResponseWriter, rq *http.Request) {
 
     rw.Header().Set("Content-Type", "application/json")
 }
