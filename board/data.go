@@ -3,6 +3,7 @@ package board
 import (
 	"encoding/json"
 	"io"
+    "time"
 )
 
 // Task data
@@ -10,7 +11,7 @@ type task struct {
     ID              uint        `json:"id"`
     Pos             uint        `json:"pos"`
     Description     string      `json:"description"`
-    DueDate         string      `json:"dueDate"`
+    CreatedAt       time.Time   `json:"createdAt"`
     ListID          uint        `json:"-"`
 }
 
@@ -19,7 +20,7 @@ type taskList struct {
     ID              uint        `json:"id"`
     Pos             uint        `json:"pos"`
     Title           string      `json:"title"`
-    Tasks           []task      `json:"tasks" gorm:"foreignKey:ListID"`
+    Tasks           []task      `json:"tasks"   gorm:"foreignKey:ListID"`
     BoardID         uint        `json:"-"`
 }
 
@@ -27,7 +28,7 @@ type taskList struct {
 type board struct {
     ID              uint        `json:"id"`
     Name            string      `json:"name"`
-    Lists           []taskList  `json:"lists" gorm:"foreignKey:BoardID"`
+    Lists           []taskList  `json:"lists"   gorm:"foreignKey:BoardID"`
 }
 
 // Create JSON representation from board, and write it to io.Writer

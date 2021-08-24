@@ -33,8 +33,8 @@ func (bh handler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
 
     var resBoard board;
 
-    // Check if exists 
-    result := bh.db.Limit(1).Where("id = ?", boardID).Find(&resBoard)
+    // Load board from database
+    result := bh.db.Where("id = ?", boardID).Preload("Lists").Preload("Lists.Tasks").First(&resBoard)
     if result.RowsAffected == 0 {
         bh.l.Println("Board with ID:", boardID, "does not exist")
         rw.WriteHeader(http.StatusBadRequest)
@@ -68,6 +68,14 @@ func (bh handler) CreateBoard(rw http.ResponseWriter, rq *http.Request) {
 }
 
 // (DELETE) board
+func (bh handler) DeleteBoard(rw http.ResponseWriter, rq *http.Request) {
+    bh.l.Println("DELETE board", rq.URL)
+
+    rqVars := mux.Vars(rq)
+    boardID := rqVars["boardID"]
+
+    bh.db.Where("id = ?", boardID).Delete(&board{})
+}
 
 ///// LISTS METHODS ///////////////////////////////////////////////////////////////////////////////
 
