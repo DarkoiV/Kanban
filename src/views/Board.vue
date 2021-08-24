@@ -38,82 +38,31 @@ export default {
     }
   },
   
-  // TMP populate multiple task list with predefined tasks
   created() {
     this.name = "Name of Board " + this.id
-    this.lists = [
-      {
-        pos: 0,
-        title: "TO DO",
-        tasks: [
-          {
-            id: 1,
-            pos: 0,
-            description: "First task!",
-            createdAt: new Date()
-          },
-          { 
-            id: 2,
-            pos: 1,
-            description: "Second task!",
-            createdAt: new Date()
-          },
-          {
-            id: 3,
-            pos: 2,
-            description: "LOREM IPSUM, I DO NOT REMEMBER FURTHER!!!",
-            createdAt: new Date()
-          },
-          {
-            id: 4,
-            pos: 3,
-            description: "Form is nice \n I LIKE FORM!",
-            createdAt: new Date()
-          }
-        ]
-      },
-      {
-        pos: 1,
-        title: "In Progress",
-        tasks: [
-          {
-            id: 1,
-            pos: 0,
-            description: "First task!",
-            createdAt: new Date()
-          },
-          { 
-            id: 2,
-            pos: 2,
-            description: "Second task!",
-            createdAt: new Date()
-          },
-          {
-            id: 3,
-            pos: 1,
-            description: "LOREM IPSUM, I DO NOT REMEMBER FURTHER!!!",
-            createdAt: new Date()
-          },
-          {
-            id: 4,
-            pos: 3,
-            description: "Form is nice \n I LIKE FORM!",
-            createdAt: new Date()
-          }
-        ]
-      }
-    ]
+    const boardDataUrl = "http://" + location.host + "/api/" + this.id
+    console.log(boardDataUrl)
+    fetch(boardDataUrl)
+      .then(response => response.json())
+      .then(data => {
+        this.name = data.name
+        this.lists = data.lists
 
-    // Sort tasks
-    this.lists.forEach(list => {
-      list.tasks.sort( (t1, t2) => t1.pos - t2.pos)
-    })
+        // Sort tasks
+        this.lists.forEach(list => {
+          list.tasks.sort( (t1, t2) => t1.pos - t2.pos)
+        })
+      })
+      .catch(err => console.log(err))
+
   },
 
   methods: {
     updateDescription(listPos, taskID, newDescription) {
-      this.lists[listPos].tasks.map(task =>{
-        if(task.id == taskID){
+      const tasks = this.lists[listPos].tasks
+
+      tasks.map(task => {
+        if (task.id == taskID) {
           task.description = newDescription;
         }
         return task;
