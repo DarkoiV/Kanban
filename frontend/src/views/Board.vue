@@ -42,7 +42,7 @@ export default {
   created() {
     this.apiURI = location.protocol + "//" + location.host + "/api/" + this.id
 
-    fetch(apiURI)
+    fetch(this.apiURI)
       .then(response => response.json())
       .then(data => {
         this.name = data.name
