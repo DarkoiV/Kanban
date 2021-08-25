@@ -20,7 +20,7 @@ type taskList struct {
     ID              uint        `json:"id"`
     Pos             uint        `json:"pos"`
     Title           string      `json:"title"`
-    Tasks           []task      `json:"tasks"   gorm:"foreignKey:ListID"`
+    Tasks           []task      `json:"tasks"   gorm:"foreignKey:ListID;constraint:OnDelete:CASCADE"`
     BoardID         uint        `json:"-"`
 }
 
@@ -28,7 +28,7 @@ type taskList struct {
 type board struct {
     ID              uint        `json:"id"`
     Name            string      `json:"name"`
-    Lists           []taskList  `json:"lists"   gorm:"foreignKey:BoardID"`
+    Lists           []taskList  `json:"lists"   gorm:"foreignKey:BoardID;constraint:OnDelete:CASCADE"`
 }
 
 // Create JSON representation from board, and write it to io.Writer

@@ -39,9 +39,7 @@ func main() {
 // Connect to DB
 func connectToDB(logger *log.Logger) *gorm.DB {
     dsn := "user=kanban_client password=kanban4321 dbname=kanbanDB host=localhost port=5432 sslmode=disable"
-    db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-        DisableForeignKeyConstraintWhenMigrating: true,
-    })
+    db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
     if err != nil {
         logger.Fatalln("Could not connect to DB")
