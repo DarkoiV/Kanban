@@ -9,8 +9,11 @@ import (
 	"os/signal"
 	"time"
 
+	"gorm.io/driver/sqlite"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+    "github.com/joho/godotenv"
 
 	"github.com/darkoiv/Kanban-Backend/board"
 	"github.com/darkoiv/Kanban-Backend/front"
@@ -21,6 +24,7 @@ import (
 func main() {
     logger := log.New(os.Stdout, "[Server Log] ", 2)
 
+    loadENV(logger)
     database := connectToDB(logger)
     router  := createRouter(logger, database)
 
@@ -36,16 +40,43 @@ func main() {
     runServer(server, logger);
 }
 
+// Load ENV
+func loadENV (logger *log.Logger) {
+    if err := godotenv.Load(); err != nil {
+        logger.Fatalln("Error loading .env", err)
+    }
+}
+
 // Connect to DB
 func connectToDB(logger *log.Logger) *gorm.DB {
-    dsn := "user=kanban_client password=kanban4321 dbname=kanbanDB host=localhost port=5432 sslmode=disable"
-    db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+    var db *gorm.DB
+    var err error
 
-    if err != nil {
-        logger.Fatalln("Could not connect to DB")
+    dbDialect := os.Getenv("DIALECT")
+
+    switch dbDialect {
+        case "sqlite":
+            db, err = gorm.Open(sqlite.Open("local.db"), &gorm.Config{})
+
+        case "postgres":
+            dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=disable",
+                    os.Getenv("DB_USER"),
+                    os.Getenv("DB_PASS"),
+                    os.Getenv("DB_NAME"),
+                    os.Getenv("DB_HOST"),
+                    os.Getenv("DB_PORT"))
+            db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+        default:
+            logger.Fatalln("Unknown database dialect:", dbDialect)
     }
 
-    logger.Println("Connected to postgres database")
+
+    if err != nil || db == nil {
+        logger.Fatalln("Could not connect to DB", err)
+    }
+
+    logger.Println("Connected to", dbDialect, "database")
 
     return db
 }
