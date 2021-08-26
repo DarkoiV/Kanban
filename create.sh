@@ -12,3 +12,6 @@ mkdir build/$FOLDER_NAME
 
 # Build Vue SPA
 (cd frontend; npm run build && test -d dist && mv dist ../build/$FOLDER_NAME)
+
+# Link latest build
+(cd build; test -d latest && unlink latest; ln -s $FOLDER_NAME latest)
