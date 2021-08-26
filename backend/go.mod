@@ -1,4 +1,4 @@
-module github.com/darkoiv/Kanban-Backend
+module github.com/darkoiv/Kanban/backend
 
 go 1.13
 

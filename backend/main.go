@@ -15,8 +15,8 @@ import (
 
     "github.com/joho/godotenv"
 
-	"github.com/darkoiv/Kanban-Backend/board"
-	"github.com/darkoiv/Kanban-Backend/front"
+	"github.com/darkoiv/Kanban/backend/board"
+	"github.com/darkoiv/Kanban/backend/front"
 	"github.com/gorilla/mux"
 )
 
