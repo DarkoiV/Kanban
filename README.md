@@ -21,7 +21,7 @@ Each build will create new folder!
 
 ***
 
-## Build docker container
+## Build docker
 ```bash
 # Clone
 git clone https://github.com/DarkoiV/Kanban.git
