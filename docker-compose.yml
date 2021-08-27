@@ -8,13 +8,11 @@ services:
                         POSTGRES_USER: ${DB_USER}
                         POSTGRES_PASSWORD: ${DB_PASS}
                         POSTGRES_DB: ${DB_NAME}
-                ports:
-                        - '9001:5432' 
         kanban:
                 container_name: kanban
                 restart: always
                 build: .
                 ports:
-                        - '9000:9000'
+                        - ${APP_PORT}:${APP_PORT}
                 links:
                         - psdb
