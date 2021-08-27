@@ -9,7 +9,6 @@ import (
 	"os/signal"
 	"time"
 
-	"gorm.io/driver/sqlite"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
@@ -49,34 +48,20 @@ func loadENV (logger *log.Logger) {
 
 // Connect to DB
 func connectToDB(logger *log.Logger) *gorm.DB {
-    var db *gorm.DB
-    var err error
+    dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=disable",
+            os.Getenv("DB_USER"),
+            os.Getenv("DB_PASS"),
+            os.Getenv("DB_NAME"),
+            os.Getenv("DB_HOST"),
+            os.Getenv("DB_PORT"))
 
-    dbDialect := os.Getenv("DIALECT")
-
-    switch dbDialect {
-        case "sqlite":
-            db, err = gorm.Open(sqlite.Open("local.db"), &gorm.Config{})
-
-        case "postgres":
-            dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=disable",
-                    os.Getenv("DB_USER"),
-                    os.Getenv("DB_PASS"),
-                    os.Getenv("DB_NAME"),
-                    os.Getenv("DB_HOST"),
-                    os.Getenv("DB_PORT"))
-            db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-
-        default:
-            logger.Fatalln("Unknown database dialect:", dbDialect)
-    }
-
+    db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
     if err != nil || db == nil {
         logger.Fatalln("Could not connect to DB", err)
     }
 
-    logger.Println("Connected to", dbDialect, "database")
+    logger.Println("Connected to postgres database")
 
     return db
 }

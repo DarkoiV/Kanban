@@ -1,0 +1,20 @@
+version: '3'
+services: 
+        psdb:
+                container_name: psdb
+                restart: always
+                image: postgres:13.4-alpine
+                environment:
+                        POSTGRES_USER: ${DB_USER}
+                        POSTGRES_PASSWORD: ${DB_PASS}
+                        POSTGRES_DB: ${DB_NAME}
+                ports:
+                        - '9001:5432' 
+        kanban:
+                container_name: kanban
+                restart: always
+                build: .
+                ports:
+                        - '9000:9000'
+                links:
+                        - psdb
