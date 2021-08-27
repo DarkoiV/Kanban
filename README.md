@@ -30,9 +30,7 @@ cd Kanban
 # Create .env
 ./setupenv.sh
 
-# Run docker build
-docker build -t darkoiv/kanban .
+# Run docker-compose
+docker-compose up
 
-# Run docker image (binds port 9000)
-docker run -p "9000:9000" darkoiv/kanban
 ```
