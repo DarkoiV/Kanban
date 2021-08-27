@@ -27,8 +27,9 @@ func main() {
     database := connectToDB(logger)
     router  := createRouter(logger, database)
 
+    port := os.Getenv("APP_PORT")
     server := &http.Server{
-        Addr: ":9000",
+        Addr: ":" + port,
         Handler: router,
         IdleTimeout:  120 * time.Second,
         ReadTimeout:  1   * time.Second,
