@@ -21,7 +21,7 @@ Each build will create new folder!
 
 ***
 
-## Build docker container
+## Build docker
 ```bash
 # Clone
 git clone https://github.com/DarkoiV/Kanban.git
@@ -30,9 +30,7 @@ cd Kanban
 # Create .env
 ./setupenv.sh
 
-# Run docker build
-docker build -t darkoiv/kanban .
+# Run docker-compose
+docker-compose up
 
-# Run docker image (binds port 9000)
-docker run -p "9000:9000" darkoiv/kanban
 ```
