@@ -42,18 +42,23 @@ export default {
   created() {
     this.apiURI = location.protocol + "//" + location.host + "/api/" + this.id
 
-    fetch(this.apiURI)
-      .then(response => response.json())
-      .then(data => {
-        this.name = data.name
-        this.lists = data.lists
+    fetch(this.apiURI).then(response => {
+      if (!response.ok) {
+        throw new Error("HTTP status: " + response.status);
+      }
+      return response.json()
+    }).then(data => {
+      this.name = data.name
+      this.lists = data.lists
 
-        // Sort tasks
-        this.lists.forEach(list => {
-          list.tasks.sort( (t1, t2) => t1.pos - t2.pos)
-        })
+      // Sort tasks
+      this.lists.forEach(list => {
+        list.tasks.sort( (t1, t2) => t1.pos - t2.pos)
       })
-      .catch(err => console.log(err))
+    }).catch(err => {
+      alert(err)
+      this.$router.push('/NotFound')
+    });
 
   },
 
