@@ -46,7 +46,7 @@ func (bh handler) RegisterRoutes(route *mux.Router) {
 func (bh handler) middleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(rw http.ResponseWriter, rq *http.Request) {
         // Log request
-        bh.l.Print(rq.Method, "on", rq.URL)
+        bh.l.Println(rq.Method, "on", rq.URL)
 
         // Set header
         rw.Header().Set("Content-Type", "application/json")
