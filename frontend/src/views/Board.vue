@@ -33,21 +33,23 @@ export default {
 
   data() {
     return {
-      apiURI: String,
+      apiURL: String,
       name: String,
       lists: []
     }
   },
   
   created() {
-    this.apiURI = location.protocol + "//" + location.host + "/api/" + this.id
+    this.apiURL = location.protocol + "//" + location.host + "/api/board/" + this.id
 
-    fetch(this.apiURI).then(response => {
+    fetch(this.apiURL).then(response => {
       if (!response.ok) {
-        throw new Error("HTTP status: " + response.status);
+        throw("HTTP status when requesting board data: " + response.status);
       }
+
       return response.json()
-    }).then(data => {
+    })
+    .then(data => {
       this.name = data.name
       this.lists = data.lists
 
@@ -55,9 +57,10 @@ export default {
       this.lists.forEach(list => {
         list.tasks.sort( (t1, t2) => t1.pos - t2.pos)
       })
-    }).catch(err => {
+    })
+    .catch(err => {
       alert(err)
-      this.$router.push('/NotFound')
+      this.$router.push('/notfound')
     });
 
   },
@@ -69,6 +72,16 @@ export default {
       tasks.map(task => {
         if (task.id == taskID) {
           task.description = newDescription;
+
+          const listID = this.lists[listPos].id
+          const taskURL = this.apiURL + "/" + listID + "/" + taskID
+          const request = {
+            method: "PUT",
+            body: JSON.stringify(task)
+          }
+          
+          fetch(taskURL, request)
+          console.log(task)
         }
         return task;
       })
@@ -77,13 +90,10 @@ export default {
     newTask(listPos) {
       //TODO get ID from server
       const newPos = this.lists[listPos].tasks.length;
-      const newID = newPos + listPos * 1000;
 
       const newTask = {
-        id: newID,
         pos: newPos,
-        description: "New task, double click to edit",
-        createdAt: new Date()
+        description: "Double click to edit",
       }
       console.log("New task", newTask)
       this.lists[listPos].tasks.push(newTask)

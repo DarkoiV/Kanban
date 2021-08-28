@@ -11,7 +11,7 @@ mkdir build/$FOLDER_NAME
 (cd backend; go get -d -v && go build -o ../build/$FOLDER_NAME/server)
 
 # Build Vue SPA
-(cd frontend; npm install && npm run build && mv dist ../build/$FOLDER_NAME)
+(cd frontend; test -d node_modules || npm install; npm run build && mv dist ../build/$FOLDER_NAME)
 
 # Link latest build
 (cd build; test -d latest && unlink latest; ln -s $FOLDER_NAME latest)

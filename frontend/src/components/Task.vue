@@ -69,8 +69,6 @@ export default {
       if(this.formEdit != this.taskObject.description) {
         console.log("TASK:", this.taskObject.id, this.formEdit);
         this.$emit('update-description', this.taskObject.id, this.formEdit)
-      } else {
-        console.log("Task have not changed")
       }
 
       // Blur focus
