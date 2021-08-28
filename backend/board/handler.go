@@ -21,99 +21,36 @@ func NewHandler (l *log.Logger, db *gorm.DB) *handler {
     return &handler{l, db}
 }
 
-///// BOARD METHODS ///////////////////////////////////////////////////////////////////////////////
+func (bh handler) RegisterRoutes(route *mux.Router) {
+    route.Use(bh.middleware)
 
-// (GET) board
-func (bh handler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
-    bh.l.Println("GET board from:", rq.URL)
-    rw.Header().Set("Content-Type", "application/json")
+    // Board route
+    route.HandleFunc("/new", bh.CreateBoard).Methods("POST")
+    boardRoute := route.PathPrefix("/{boardID:[0-9]+}").Subrouter()
 
-    rqVars := mux.Vars(rq)
-    boardID := rqVars["boardID"]
+    boardRoute.HandleFunc("", bh.GetBoard).Methods("GET")
+    boardRoute.HandleFunc("", bh.UpdateOrder).Methods("PATCH")
+    boardRoute.HandleFunc("", bh.DeleteBoard).Methods("DELETE")
 
-    var resBoard board;
+    // List route
+    boardRoute.HandleFunc("/new", bh.CreateList).Methods("POST")
+    listRoute := boardRoute.PathPrefix("/{listID:[0-9]+}").Subrouter()
+    listRoute.HandleFunc("", bh.DeleteList).Methods("DELETE")
 
-    // Load board from database
-    result := bh.db.Where("id = ?", boardID).Preload("Lists").Preload("Lists.Tasks").First(&resBoard)
-    if result.RowsAffected == 0 {
-        bh.l.Println("Board with ID:", boardID, "does not exist")
-        rw.WriteHeader(http.StatusBadRequest)
-        return
-    }
-
-    // Send response
-    if err := resBoard.toJSON(rw); err != nil {
-        bh.l.Println("Error with JSON marshal, ", err)
-        rw.WriteHeader(http.StatusInternalServerError)
-    }
-
+    // Task route
+    listRoute.HandleFunc("/new", bh.PostTask).Methods("POST")
+    listRoute.HandleFunc("/{taskID:[0-9]+}", bh.UpdateTask).Methods("PUT")
+    listRoute.HandleFunc("/{taskID:[0-9]+}", bh.DeleteTask).Methods("DELETE")
 }
 
-// (POST) create board
-func (bh handler) CreateBoard(rw http.ResponseWriter, rq *http.Request) {
-    bh.l.Println("POST new board", rq.URL)
-    rw.Header().Set("Content-Type", "application/json")
+func (bh handler) middleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(rw http.ResponseWriter, rq *http.Request) {
+        // Log request
+        bh.l.Print(rq.Method, "on", rq.URL)
 
-    // Create new
-    var newBoard board;
-    newBoard.fromJSON(rq.Body);
-    bh.db.Create(&newBoard)
+        // Set header
+        rw.Header().Set("Content-Type", "application/json")
 
-    // Send response
-    if err := newBoard.toJSON(rw); err != nil {
-        bh.l.Println("Error with JSON marshal, ", err)
-        rw.WriteHeader(http.StatusInternalServerError)
-    }
-
-}
-
-// (DELETE) board
-func (bh handler) DeleteBoard(rw http.ResponseWriter, rq *http.Request) {
-    bh.l.Println("DELETE board", rq.URL)
-
-    rqVars := mux.Vars(rq)
-    boardID := rqVars["boardID"]
-
-    bh.db.Where("id = ?", boardID).Delete(&board{})
-}
-
-///// LISTS METHODS ///////////////////////////////////////////////////////////////////////////////
-
-// (GET) lists on board
-func (bh handler) GetLists(rw http.ResponseWriter, rq *http.Request) {
-
-
-    rw.Header().Set("Content-Type", "application/json")
-}
-
-// (PATCH) Update lists
-func (bh handler) UpdateLists(rw http.ResponseWriter, rq *http.Request) {
-
-    rw.Header().Set("Content-Type", "application/json")
-}
-
-// (DELETE) list from board
-func (bh handler) DeleteList(rw http.ResponseWriter, rq *http.Request) {
-
-    rw.Header().Set("Content-Type", "application/json")
-}
-
-///// CARDS METHODS ///////////////////////////////////////////////////////////////////////////////
-
-// (POST) Create new task
-func (bh handler) PostTask(rw http.ResponseWriter, rq *http.Request) {
-
-    rw.Header().Set("Content-Type", "application/json")
-}
-
-// (PUT) update task
-func (bh handler) UpdateTask(rw http.ResponseWriter, rq *http.Request) {
-
-    rw.Header().Set("Content-Type", "application/json")
-}
-
-// (DELETE) task
-func (bh handler) DeleteTask(rw http.ResponseWriter, rq *http.Request) {
-
-    rw.Header().Set("Content-Type", "application/json")
+        next.ServeHTTP(rw, rq)
+    })
 }

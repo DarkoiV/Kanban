@@ -74,26 +74,14 @@ func createRouter(logger *log.Logger, db *gorm.DB) *mux.Router {
     // Create API route
     apiRoute := serverRouter.PathPrefix("/api").Subrouter()
 
-    // Create board handler
-    bh := board.NewHandler(logger, db);
-    apiRoute.HandleFunc("/new", bh.CreateBoard).Methods("POST")
-
-    // Create board specific route
-    boardRoute := apiRoute.PathPrefix("/{boardID:[0-9]+}").Subrouter()
-    boardRoute.HandleFunc("", bh.GetBoard).Methods("GET")
-    boardRoute.HandleFunc("", bh.DeleteBoard).Methods("DELETE")
-    boardRoute.HandleFunc("/lists", bh.UpdateLists).Methods("PATCH")
-
-    // Create list specific route
-    listRoute := boardRoute.PathPrefix("/{listID:[0-9]+}").Subrouter()
-    listRoute.HandleFunc("", bh.DeleteList).Methods("DELETE")
-    listRoute.HandleFunc("", bh.PostTask).Methods("POST")
-
-    listRoute.HandleFunc("/{taskID:[0-9]+}", bh.UpdateTask).Methods("PUT")
-    listRoute.HandleFunc("/{taskID:[0-9]+}", bh.DeleteTask).Methods("DELETE")
+    // Create board handler and route
+    bh := board.NewHandler(logger, db)
+    boardRoute := apiRoute.PathPrefix("/board").Subrouter()
+    bh.RegisterRoutes(boardRoute)
 
     // Catch bad API calls
-    serverRouter.PathPrefix("/api").HandlerFunc(func(rw http.ResponseWriter, rq *http.Request){
+    serverRouter.PathPrefix("/api").HandlerFunc(func(rw http.ResponseWriter, rq *http.Request) {
+        logger.Println("Invalid request:", rq.Method, "on", rq.URL)
         http.Error(rw, "", http.StatusBadRequest)
     })
 
