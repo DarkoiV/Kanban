@@ -42,49 +42,35 @@ export default {
   created() {
     this.apiURL = location.protocol + "//" + location.host + "/api/board/" + this.id
 
-    fetch(this.apiURL).then(response => {
-      if (!response.ok) {
-        throw("HTTP status when requesting board data: " + response.status);
-      }
+    fetch(this.apiURL)
+      .then(response => {
+        if (!response.ok) { 
+          throw("HTTP: " + response.status)
+        }
 
-      return response.json()
-    })
-    .then(data => {
-      this.name = data.name
-      this.lists = data.lists
-
-      // Sort tasks
-      this.lists.forEach(list => {
-        list.tasks.sort( (t1, t2) => t1.pos - t2.pos)
+        return response.json()
       })
-    })
-    .catch(err => {
-      alert(err)
-      this.$router.push('/notfound')
-    });
+      .then(data => {
+        this.name = data.name
+        this.lists = data.lists
 
+        // Sort tasks
+        this.lists.forEach(list => {
+          list.tasks.sort( (t1, t2) => t1.pos - t2.pos)
+        })
+      })
+      .catch(err => {
+        alert(err)
+        this.$router.push('/notfound')
+      });
   },
 
   methods: {
     updateDescription(listPos, taskID, newDescription) {
       const tasks = this.lists[listPos].tasks
-
-      tasks.map(task => {
-        if (task.id == taskID) {
-          task.description = newDescription;
-
-          const listID = this.lists[listPos].id
-          const taskURL = this.apiURL + "/" + listID + "/" + taskID
-          const request = {
-            method: "PUT",
-            body: JSON.stringify(task)
-          }
-          
-          fetch(taskURL, request)
-          console.log(task)
-        }
-        return task;
-      })
+      const task = tasks.find(task => task.id = taskID)
+      
+      task.description = newDescription
     },
     
     newTask(listPos) {
@@ -100,18 +86,28 @@ export default {
     },
 
     newList() {
-      const newPos = this.lists.length
-      const newID = newPos
-
       const newList = {
-        id: newID,
-        pos: newPos,
-        title: "New List",
-        tasks: []
+       pos: this.lists.length
       }
+      const URL = this.apiURL + '/new'
+      const req = {
+        method: "POST",
+        body: JSON.stringify(newList)
+      }
+      fetch(URL, req)
+        .then(response => {
+          if(!response.ok) { 
+            throw ("Issue when creaing new list, HTTP: ", response.status)
+          }
 
-      console.log("New list", newList)
-      this.lists.push(newList)
+          return response.json()
+        })
+        .then(data => {
+          this.lists.push(data)
+        })
+        .catch(err => {
+          alert(err)
+        });
     }
 
   },
