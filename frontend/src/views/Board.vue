@@ -67,8 +67,8 @@ export default {
 
   methods: {
     updateDescription(listPos, taskID, newDescription) {
-      const tasks = this.lists[listPos].tasks
-      const task = tasks.find(task => task.id = taskID)
+      const list = this.lists[listPos].tasks
+      const task = list.find(task => task.id === taskID)
       
       task.description = newDescription
     },
