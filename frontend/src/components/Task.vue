@@ -12,8 +12,8 @@
         v-model="formEdit"
         ref="textInput"
         @keydown.enter.shift.exact.prevent
-        @keydown.enter.shift.exact="saveEdit"
-        @keydown.escape.exact="saveEdit"
+        @keydown.enter.shift.exact="this.$refs.textInput.blur()"
+        @keydown.escape.exact="this.$refs.textInput.blur()"
         @blur="saveEdit"
         @input="resize"
       /> 
@@ -70,9 +70,6 @@ export default {
         console.log("TASK:", this.taskObject.id, this.formEdit);
         this.$emit('update-description', this.taskObject.id, this.formEdit)
       }
-
-      // Blur focus
-      this.$refs.textInput.blur()
     },
 
     // Resize text area
