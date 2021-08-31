@@ -1,14 +1,16 @@
 <template>
-  <BoardHeader :boardName="name"/> 
-  <div class="main-body">
-    <List v-for="list in lists"
-      :pos="list.pos"
-      :title="list.title"
-      :key="list.id"
-      :tasks="list.tasks" 
-    />
-    <div>
-    <p id="newlist" @click="newList"> Create new list </p>
+  <div v-show="!loading">
+    <BoardHeader :boardName="name"/> 
+    <div class="main-body">
+      <List v-for="list in lists"
+        :pos="list.pos"
+        :title="list.title"
+        :key="list.id"
+        :tasks="list.tasks" 
+      />
+      <div>
+      <p id="newlist" @click="newList"> Create new list </p>
+      </div>
     </div>
   </div>
 </template>
@@ -30,7 +32,7 @@ export default {
     BoardHeader
   },
 
-  computed: mapGetters(['name', 'lists']),
+  computed: mapGetters(['name', 'lists', 'loading']),
  
   created() {
     this.fetchBoard(this.id)

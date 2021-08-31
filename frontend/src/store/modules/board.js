@@ -3,30 +3,34 @@ import router from '../../router'
 
 const state = {
   id: Number,
+  loading: Boolean,
   name: String,
   lists: [],
 }
 
 const getters = {
   name: state => state.name,
+  loading: state => state.loading,
   lists: state => state.lists
 }
 
 const actions = {
   async fetchBoard({ commit }, id) {
+    commit('SET_LOADING', true)
     try {
       const board = await API.GET(API.URL + "/board/" + id)
-      commit('loadBoard', board)
+      commit('LOAD_BOARD', board)
     } catch(err) {
       alert("Error when loading board " + err)
       router.push('/notfound')
     }
+    commit('SET_LOADING', false)
   },
 
   async newList({ commit }) {
     try {
       const response = await API.POST(API.URL + "/board/" + 1 + "/new")
-      commit('newList', response)
+      commit('NEW_LIST', response)
     } catch(err) {
       alert("Error when creating new list " + err)
     }
@@ -47,7 +51,7 @@ const actions = {
       })
 
       const updatedTask = await API.PUT(API.URL + "/board/" + state.id + "/" + listID + '/' + taskID, newTask)
-      commit('updateTask', updatedTask)
+      commit('UPDATE_TASK', updatedTask)
     } catch(err) {
       alert("Error when updating task" + err)
     }
@@ -56,16 +60,17 @@ const actions = {
 }
 
 const mutations = {
-  loadBoard: (state, data) => {
+  SET_LOADING: (state, bool) => state.loading = bool,
+
+  LOAD_BOARD: (state, data) => {
     state.id = data.id
     state.name = data.name
     state.lists = data.lists
-    state.loaded = true
   },
 
-  newList: (state, data) => state.lists.push(data),
+  NEW_LIST: (state, data) => state.lists.push(data),
 
-  updateTask: (state, updatedTask) => {
+  UPDATE_TASK: (state, updatedTask) => {
     state.lists.forEach(list => {
       list.tasks.forEach(task => {
         if(task.id === updatedTask.id) {
