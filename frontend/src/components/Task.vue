@@ -15,6 +15,7 @@
         @keydown.enter.shift.exact="this.$refs.textInput.blur()"
         @keydown.escape.exact="this.$refs.textInput.blur()"
         @blur="saveEdit"
+        @focus="resize"
         @input="resize"
       /> 
     </form>
