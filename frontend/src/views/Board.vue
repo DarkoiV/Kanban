@@ -34,16 +34,20 @@ export default {
 
   data() {
     return {
-      apiURL: String,
+      boardURL: String,
       name: String,
       lists: []
     }
   },
   
   created() {
-    this.apiURL = location.protocol + "//" + location.host + "/api/board/" + this.id
+    if(process.env.NODE_ENV == 'development') {
+      this.boardURL = "http://localhost:9000/api/board/" + this.id
+    } else {
+      this.boardURL = API.URL + "/board/" + this.id
+    }
 
-    API.GET(this.apiURL)
+    API.GET(this.boardURL)
       .then(data => {
         this.name = data.name
         this.lists = data.lists
@@ -60,13 +64,22 @@ export default {
   },
 
   methods: {
+    newTask(listPos) {
+      const newPos = this.lists[listPos].tasks.length;
+      const newTask = {
+        pos: newPos,
+        description: "Double click to edit",
+      }
+      this.lists[listPos].tasks.push(newTask)
+    },
+
     updateDescription(listPos, taskID, newDescription) {
       const list = this.lists[listPos]
       const task = list.tasks.find(task => task.id === taskID)
       const oldDescription = task.description 
       task.description = newDescription
 
-      const URL = this.apiURL + '/' + list.id + '/' + task.id
+      const URL = this.boardURL + '/' + list.id + '/' + task.id
       API.PUT(URL, task)
         .catch(err => {
           alert(err)
@@ -74,23 +87,11 @@ export default {
         })
     },
     
-    newTask(listPos) {
-      //TODO get ID from server
-      const newPos = this.lists[listPos].tasks.length;
-
-      const newTask = {
-        pos: newPos,
-        description: "Double click to edit",
-      }
-      console.log("New task", newTask)
-      this.lists[listPos].tasks.push(newTask)
-    },
-
     newList() {
       const newList = {
        pos: this.lists.length
       }
-      const URL = this.apiURL + '/new'
+      const URL = this.boardURL + '/new'
       API.POST(URL, newList)
         .then(data => {
           this.lists.push(data)

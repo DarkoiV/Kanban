@@ -1,3 +1,5 @@
+export const URL = location.protocol + "//" + location.host + "/api"
+
 function MY_FETCH(URL, REQ) {
   return fetch(URL, REQ)
     .then(response => {
