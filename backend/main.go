@@ -17,6 +17,7 @@ import (
 	"github.com/darkoiv/Kanban/backend/board"
 	"github.com/darkoiv/Kanban/backend/front"
 	"github.com/gorilla/mux"
+	gorilla "github.com/gorilla/handlers"
 )
 
 // Main function
@@ -27,10 +28,17 @@ func main() {
     database := connectToDB(logger)
     router  := createRouter(logger, database)
 
+    // Allow dev server
+    ch := gorilla.CORS(
+       gorilla.AllowedOrigins([]string{"http://localhost:8080"}), 
+       gorilla.AllowedMethods([]string{"GET", "POST", "PUT", "PATCH", "DELETE"}),
+       gorilla.AllowedHeaders([]string{"*"}),
+   )
+
     port := os.Getenv("APP_PORT")
     server := &http.Server{
         Addr: ":" + port,
-        Handler: router,
+        Handler: ch(router),
         IdleTimeout:  120 * time.Second,
         ReadTimeout:  1   * time.Second,
         WriteTimeout: 1   * time.Second,

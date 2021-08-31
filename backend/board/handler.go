@@ -21,6 +21,7 @@ func NewHandler (l *log.Logger, db *gorm.DB) *handler {
     return &handler{l, db}
 }
 
+// Register board routes
 func (bh handler) RegisterRoutes(route *mux.Router) {
     route.Use(bh.middleware)
 
@@ -43,6 +44,7 @@ func (bh handler) RegisterRoutes(route *mux.Router) {
     listRoute.HandleFunc("/{taskID:[0-9]+}", bh.DeleteTask).Methods("DELETE")
 }
 
+// Middleware func
 func (bh handler) middleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(rw http.ResponseWriter, rq *http.Request) {
         // Log request
