@@ -18,6 +18,7 @@
 <script>
 import List from '../components/List.vue'
 import BoardHeader from '../components/BoardHeader.vue'
+import * as API from '../api'
 
 export default {
   name: 'Board',
@@ -42,14 +43,7 @@ export default {
   created() {
     this.apiURL = location.protocol + "//" + location.host + "/api/board/" + this.id
 
-    fetch(this.apiURL)
-      .then(response => {
-        if (!response.ok) { 
-          throw("HTTP: " + response.status)
-        }
-
-        return response.json()
-      })
+    API.GET(this.apiURL)
       .then(data => {
         this.name = data.name
         this.lists = data.lists
@@ -67,10 +61,17 @@ export default {
 
   methods: {
     updateDescription(listPos, taskID, newDescription) {
-      const list = this.lists[listPos].tasks
-      const task = list.find(task => task.id === taskID)
-      
+      const list = this.lists[listPos]
+      const task = list.tasks.find(task => task.id === taskID)
+      const oldDescription = task.description 
       task.description = newDescription
+
+      const URL = this.apiURL + '/' + list.id + '/' + task.id
+      API.PUT(URL, task)
+        .catch(err => {
+          alert(err)
+          task.description = oldDescription
+        })
     },
     
     newTask(listPos) {
@@ -90,18 +91,7 @@ export default {
        pos: this.lists.length
       }
       const URL = this.apiURL + '/new'
-      const req = {
-        method: "POST",
-        body: JSON.stringify(newList)
-      }
-      fetch(URL, req)
-        .then(response => {
-          if(!response.ok) { 
-            throw ("Issue when creaing new list, HTTP: ", response.status)
-          }
-
-          return response.json()
-        })
+      API.POST(URL, newList)
         .then(data => {
           this.lists.push(data)
         })
