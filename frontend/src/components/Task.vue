@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 
 export default {
   name: 'Task',
@@ -44,7 +45,8 @@ export default {
   },
 
   methods: {
-    // Start editing task
+    ...mapActions(['updateTask']),
+
     editTask() {
       this.formEdit = this.taskObject.description;
       this.editable = true;
@@ -60,24 +62,19 @@ export default {
       })
     },
 
-    // Send edited task to parent
     saveEdit() {
       this.editable = false;
       this.$refs.taskContainer.draggable = true;
 
       // Check if edition changed anything
       if(this.formEdit != this.taskObject.description) {
-        console.log("TASK:", this.taskObject.id, this.formEdit);
-        this.$emit('update-description', this.taskObject.id, this.formEdit)
+        this.updateTask({taskID: this.taskObject.id, newDescription: this.formEdit})
       }
     },
 
-    // Resize text area
     resize(e) {
       e.target.style.height = "auto"
-
       e.target.style.height = `${e.target.scrollHeight}px`
-      console.log(e.target.scrollHeight)
     }
   },
 }

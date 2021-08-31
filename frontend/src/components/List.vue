@@ -5,7 +5,6 @@
       v-for="task in tasks" 
       :key="task.id"
       :taskObject = "task"
-      @update-description="updateDescription"
       />
     <span id="newtask" @click="newTask"> Create new task </span>
   </div>
@@ -22,13 +21,6 @@ export default {
   },
 
   methods: {
-    updateDescription(taskID, newDescription) {
-      this.$emit('update-description', this.pos, taskID, newDescription);
-    },
-
-    newTask() {
-      this.$emit("new-task", this.pos);
-    }
   },
 
   props: {
