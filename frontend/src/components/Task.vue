@@ -63,12 +63,17 @@ export default {
     },
 
     saveEdit() {
-      this.editable = false;
       this.$refs.taskContainer.draggable = true;
 
       // Check if edition changed anything
       if(this.formEdit != this.taskObject.description) {
-        this.updateTask({taskID: this.taskObject.id, newDescription: this.formEdit})
+        this.updateTask({
+          taskID: this.taskObject.id,
+          newDescription: this.formEdit,
+          callback: () => {this.editable = false}
+        })
+      } else {
+        this.editable = false
       }
     },
 

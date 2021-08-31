@@ -32,7 +32,7 @@ const actions = {
     }
   },
 
-  async updateTask({ commit }, {taskID, newDescription}) {
+  async updateTask({ commit }, {taskID, newDescription, callback}) {
     try {
       let listID
       let newTask = {
@@ -51,6 +51,7 @@ const actions = {
     } catch(err) {
       alert("Error when updating task" + err)
     }
+    callback()
   }
 }
 
