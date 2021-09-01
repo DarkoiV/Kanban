@@ -12,6 +12,7 @@ func (bh handler) CreateList(rw http.ResponseWriter, rq *http.Request) {
     rqVars := mux.Vars(rq)
     boardID := rqVars["boardID"]
     var newList taskList;
+    newList.fromJSON(rq.Body)
 
     boardIDNumber, err := strconv.Atoi(boardID)
     if err != nil {
@@ -20,12 +21,11 @@ func (bh handler) CreateList(rw http.ResponseWriter, rq *http.Request) {
         return
     }
     newList.BoardID = uint(boardIDNumber)
-    newList.Title = "New List"
     bh.db.Create(&newList)
 
     // Send response
     if err := newList.toJSON(rw); err != nil {
-        bh.l.Println("Error with JSON marshal, ", err)
+        bh.l.Println("Error with JSON marshal,", err)
         rw.WriteHeader(http.StatusInternalServerError)
     }
 }

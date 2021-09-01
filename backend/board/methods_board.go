@@ -1,8 +1,9 @@
 package board
 
 import (
-    "net/http"
-    "github.com/gorilla/mux"
+	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 // (POST) create board
@@ -39,11 +40,6 @@ func (bh handler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
         bh.l.Println("Error with JSON marshal, ", err)
         rw.WriteHeader(http.StatusInternalServerError)
     }
-}
-
-// (PATCH) Update order of elements
-func (bh handler) UpdateOrder(rw http.ResponseWriter, rq *http.Request) {
-
 }
 
 // (DELETE) board

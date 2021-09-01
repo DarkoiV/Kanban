@@ -30,7 +30,6 @@ func (bh handler) RegisterRoutes(route *mux.Router) {
     boardRoute := route.PathPrefix("/{boardID:[0-9]+}").Subrouter()
 
     boardRoute.HandleFunc("", bh.GetBoard).Methods("GET")
-    boardRoute.HandleFunc("", bh.UpdateOrder).Methods("PATCH")
     boardRoute.HandleFunc("", bh.DeleteBoard).Methods("DELETE")
 
     // List route
