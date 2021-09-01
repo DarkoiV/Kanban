@@ -104,6 +104,9 @@ export default {
 .task:hover {
   transform: scale(1.02);
 }
+.dragged {
+  opacity: 60%;
+}
 textarea {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 14px;

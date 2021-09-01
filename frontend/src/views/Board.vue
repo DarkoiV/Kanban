@@ -3,6 +3,7 @@
     <BoardHeader :boardName="name"/> 
     <div class="main-body">
       <List v-for="list in lists"
+        :id = "list.id"
         :pos="list.pos"
         :title="list.title"
         :key="list.id"
