@@ -35,6 +35,7 @@ func (bh handler) RegisterRoutes(route *mux.Router) {
     // List route
     boardRoute.HandleFunc("/new", bh.CreateList).Methods("POST")
     listRoute := boardRoute.PathPrefix("/{listID:[0-9]+}").Subrouter()
+    listRoute.HandleFunc("", bh.UpdateList).Methods("PATCH")
     listRoute.HandleFunc("", bh.DeleteList).Methods("DELETE")
 
     // Task route

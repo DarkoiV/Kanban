@@ -12,7 +12,7 @@ type task struct {
     Pos             uint        `json:"pos"`
     Description     string      `json:"description"`
     CreatedAt       time.Time   `json:"createdAt"`
-    ListID          uint        `json:"listID"`
+    ListID          uint        `json:"-"`
 }
 
 func (t *task) toJSON(w io.Writer) error {
@@ -31,7 +31,7 @@ type taskList struct {
     Pos             uint        `json:"pos"`
     Title           string      `json:"title"`
     Tasks           []task      `json:"tasks"   gorm:"foreignKey:ListID;constraint:OnDelete:CASCADE"`
-    BoardID         uint        `json:"boardID"`
+    BoardID         uint        `json:"-"`
 }
 
 func (l *taskList) toJSON(w io.Writer) error {
