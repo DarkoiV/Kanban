@@ -84,15 +84,13 @@ const actions = {
         list.tasks.find(task => taskID == task.id)
       )
       let movedTask = oldList.tasks.find(task => task.id == taskID)
-
-      movedTask.pos = newList.tasks.lenght
-      movedTask.listID = listID
-
-      await API.PUT(`${API.URL}/board/${state.id}/${oldList.id}/${taskID}`, movedTask)
-
-      console.log(oldList)
+      
       commit('DROP_ON_LIST', {listID, movedTask})
       commit('REMOVE_FROM_LIST', {listID: oldList.id, taskID,})
+
+      API.PATCH(`${API.URL}/board/${state.id}/${oldList.id}`, oldList)
+      API.PATCH(`${API.URL}/board/${state.id}/${newList.id}`, newList)
+
     }
     catch(err) {
       alert("Error when moving task " + err)
@@ -134,10 +132,12 @@ const mutations = {
   DROP_ON_LIST: (state, {listID, movedTask}) => {
     const list = state.lists.find(list => list.id == listID)
     list.tasks.push(movedTask)
+    list.tasks.map((task, index) => task.pos = index ) 
   },
   REMOVE_FROM_LIST: (state, {listID, taskID}) => {
     const list = state.lists.find(list => list.id == listID)
     list.tasks = list.tasks.filter(task => task.id != taskID)
+    list.tasks.map((task, index) => task.pos = index ) 
   }
 }
 
