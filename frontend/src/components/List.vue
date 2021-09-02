@@ -1,9 +1,10 @@
 <template>
   <div class="list shadowBox" 
     @drop="onDrop($event, this.id)" 
-    @dragenter.prevent 
-    @dragover.prevent
-    >
+    @dragenter.prevent
+    @dragover="dragOver"
+    @dragleave="dragLeave"
+  >
     <p 
       v-if="!editable" 
       id="title"
@@ -26,7 +27,9 @@
     <Task 
       @dragstart="startDrag($event, task.id)"
       @dragend="endDrag"
-      v-for="task in tasks" 
+      @dragenter.prevent
+      @dragover.prevent
+      v-for="task in sortedTasks" 
       :key="task.id"
       :taskObject = "task"
     />
@@ -48,12 +51,34 @@ export default {
   created() {
     this.newTitle = ""
     this.editable = false;
+    this.drgOver = false;
   },
 
   data() {
     return {
       newTitle: String,
-      editable: Boolean
+      editable: Boolean,
+      drgOver: Boolean,
+      ghostPos: Number,
+      leaveTicks: Number
+    }
+  },
+
+  computed: {
+    sortedTasks: function() {
+      let sortedTasks = this.tasks
+
+      if(this.drgOver) {
+        sortedTasks = [
+          ...sortedTasks.filter( task => task.pos < this.ghostPos), 
+          {id: -1},
+          ...sortedTasks.filter( task => task.pos >= this.ghostPos)
+        ]
+      } else {
+        sortedTasks = sortedTasks.filter( task => task.id != -1 )
+      }
+      
+      return sortedTasks
     }
   },
 
@@ -83,19 +108,51 @@ export default {
     },
 
     startDrag(event, taskID) {
-      event.currentTarget.classList.add('dragged')
       event.dataTransfer.dropEffect = 'move'
       event.dataTransfer.effectAllowed = 'move'
       event.dataTransfer.setData('taskID', taskID)
+      this.$nextTick( () => {
+        event.currentTarget.classList.add('dragged')
+      })
     },
 
     endDrag(event) {
       event.currentTarget.classList.remove('dragged')
     },
 
+    dragOver(event) {
+      this.leaveTicks = 0;
+      this.drgOver = true;
+      event.preventDefault()
+      let elements = event.currentTarget.children
+      this.ghostPos = 0
+      elements.forEach(element => {
+        if(element.classList.contains('task')) {
+          const elementY = element.getBoundingClientRect().y
+          const mouseY = event.clientY
+          if(mouseY > (elementY + 100)) {
+            this.ghostPos++;
+          }
+        }
+      })
+    },
+
+    dragLeave(event) {
+      this.leaveTicks = 1;
+      event.preventDefault()
+      setTimeout(() => {
+        if(this.leaveTicks == 1){
+            this.drgOver = false;
+        }
+      }, 100)
+
+    },
+
     onDrop(event, listID) {
+      this.drgOver = false;
       const taskID = event.dataTransfer.getData('taskID')
-      this.dropTask({taskID, listID}) 
+      const ghostPos = this.ghostPos
+      this.dropTask({taskID, listID, ghostPos}) 
     },
   },
 

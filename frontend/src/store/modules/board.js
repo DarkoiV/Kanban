@@ -91,17 +91,18 @@ const actions = {
     callback()
   },
 
-  async dropTask({ commit }, { taskID, listID }) {
+  async dropTask({ commit }, { taskID, listID, ghostPos }) {
     try {
       const newList = state.lists.find(list => listID == list.id)
       const oldList = state.lists.find(list =>
         list.tasks.find(task => taskID == task.id)
       )
-      if (newList == oldList) { return }
       let movedTask = oldList.tasks.find(task => task.id == taskID)
-      
-      commit('DROP_ON_LIST', {listID, movedTask})
+
+      if (newList == oldList && movedTask.pos == ghostPos) { return }
+
       commit('REMOVE_FROM_LIST', {listID: oldList.id, taskID,})
+      commit('DROP_ON_LIST', {listID, movedTask, ghostPos})
 
       API.PATCH(`${API.URL}/board/${state.id}/${oldList.id}`, oldList)
       await API.PATCH(`${API.URL}/board/${state.id}/${newList.id}`, newList)
@@ -151,10 +152,15 @@ const mutations = {
     })
   },
 
-  DROP_ON_LIST: (state, {listID, movedTask}) => {
+  DROP_ON_LIST: (state, {listID, movedTask, ghostPos}) => {
     const list = state.lists.find(list => list.id == listID)
-    list.tasks.push(movedTask)
-    list.tasks.map((task, index) => task.pos = index ) 
+
+    list.tasks = [ 
+      ...list.tasks.filter(task => task.pos < ghostPos),
+      movedTask,
+      ...list.tasks.filter(task => task.pos >= ghostPos)
+    ]
+    list.tasks.map((task, index) => task.pos = index )
   },
   REMOVE_FROM_LIST: (state, {listID, taskID}) => {
     const list = state.lists.find(list => list.id == listID)

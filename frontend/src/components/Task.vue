@@ -100,7 +100,7 @@ export default {
   transform: scale(1.02);
 }
 .dragged {
-  opacity: 60%;
+  opacity: 30%;
 }
 textarea {
   font-family: Avenir, Helvetica, Arial, sans-serif;
