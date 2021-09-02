@@ -54,11 +54,6 @@ export default {
       this.$refs.taskContainer.draggable = false;
 
       this.$nextTick(() => {
-        // Resize it
-        this.$refs.textInput.height = "auto"
-        this.$refs.textInput.height = `${this.$refs.textInput.scrollHeight}px`
-
-        // Grab input
         this.$refs.textInput.focus()
       })
     },

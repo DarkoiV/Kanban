@@ -41,6 +41,20 @@ const actions = {
     }
   },
 
+  async renameList({ commit }, {listID, newTitle, callback}) {
+    try {
+      const editedList = {
+        id: listID,
+        title: newTitle
+      }
+      await API.PATCH(`${API.URL}/board/${state.id}/${listID}`, editedList)
+      commit("RENAME_LIST", {listID, newTitle})
+    } catch(err) {
+      alert("Error when renaming list ", + err)
+    }
+    callback()
+  },
+
   async newTask({ commit }, listID) {
     try {
       const list = state.lists.find(list => list.id === listID)
@@ -110,8 +124,9 @@ const mutations = {
     state.lists = data.lists
     
     // Sort
+    state.lists.sort( (a, b) => a.pos - b.pos )
     state.lists.forEach( list => 
-      list.tasks.sort( (a, b) => a.pos - b.pos)
+      list.tasks.sort( (a, b) => a.pos - b.pos )
     )
   },
 
@@ -119,6 +134,11 @@ const mutations = {
   NEW_TASK: (state, {listID, newTask}) => {
     const list = state.lists.find( list => listID === list.id )
     list.tasks.push(newTask)
+  },
+
+  RENAME_LIST: (state, {listID, newTitle}) => {
+    const list = state.lists.find(list => list.id == listID)
+    list.title = newTitle
   },
 
   UPDATE_TASK: (state, updatedTask) => {
