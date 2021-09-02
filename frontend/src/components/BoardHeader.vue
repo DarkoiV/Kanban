@@ -1,8 +1,8 @@
 <template>
   <header>
-    <div id="boardname">
+    <p id="boardname">
       {{boardName}}
-    </div>
+    </p>
   </header>
 </template>
 

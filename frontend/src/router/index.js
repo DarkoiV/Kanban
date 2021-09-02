@@ -1,11 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Board from '../views/Board.vue'
+import BoardList from '../views/BoardList.vue'
 import NotFound from '../views/NotFound.vue'
 
 const routes = [
   {
+    path: '/',
+    name: 'BoardList',
+    component: BoardList,
+  },
+  {
     path: '/board/:id',
-    name: 'Home',
+    name: 'Board',
     component: Board,
     props: true
   },
