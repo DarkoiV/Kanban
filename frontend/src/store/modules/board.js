@@ -100,6 +100,9 @@ const actions = {
       let movedTask = oldList.tasks.find(task => task.id == taskID)
 
       if (newList == oldList && movedTask.pos == ghostPos) { return }
+      if (newList == oldList && movedTask.pos < ghostPos) {
+        ghostPos--;
+      }
 
       commit('REMOVE_FROM_LIST', {listID: oldList.id, taskID,})
       commit('DROP_ON_LIST', {listID, movedTask, ghostPos})

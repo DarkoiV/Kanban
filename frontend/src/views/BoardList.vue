@@ -11,10 +11,9 @@
         >
         <p class="board-title">  {{ board.title }} </p>
       </div>
-      <div class="board-element">
-        <p class="board-title"> New Board </p>
-      </div>
     </div>
+    <p> ------------------------------------</p>
+    <p class="list-new"> New Board </p>
   </div>
 </template>
 
@@ -65,15 +64,16 @@ export default {
   margin-bottom: 10px;
 }
 .flex-container {
+  margin: auto;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: space-around;
 }
 .board-element {
-  margin: 10px;
+  margin: auto;
+  margin-top: 5px;
 
-  width: 200px;
-  height: 150px;
+  width: 80%;
 
   cursor: pointer;
 
@@ -84,6 +84,7 @@ export default {
 }
 .board-element:hover {
   color: salmon;
+  border: solid 2px white;
 }
 .board-title {
   font: 20px;
@@ -93,6 +94,7 @@ export default {
 .list-new {
   cursor: pointer;
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 .list-new:hover {
   color: salmon;
