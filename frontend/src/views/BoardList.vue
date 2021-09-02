@@ -1,15 +1,20 @@
 <template>
   <div class="board-list shadowBox">
     <p class="list-title"> LIST OF BOARDS </p>
-    <div
-      class="board-element"
-      v-for="board in boards" 
-      :key="board.id"
-      @click="redirect(board.id)"
-      >
-      <p>  {{ board.title }} </p>
+    <p> ------------------------------------</p>
+    <div class=flex-container>
+      <div
+        class="board-element"
+        v-for="board in boards" 
+        :key="board.id"
+        @click="redirect(board.id)"
+        >
+        <p class="board-title">  {{ board.title }} </p>
+      </div>
+      <div class="board-element">
+        <p class="board-title"> New Board </p>
+      </div>
     </div>
-    <p class="list-new"> Create new board </p>
   </div>
 </template>
 
@@ -26,7 +31,8 @@ export default {
   created() {
     this.boards = [
       ({title: "First Board", id: 1}),
-      ({title: "Second Board", id: 2})
+      ({title: "Second Board", id: 2}),
+      ({title: "Third Board", id: 3})
     ]
   },
 
@@ -58,11 +64,31 @@ export default {
   font-size: 24px;
   margin-bottom: 10px;
 }
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
 .board-element {
+  margin: 10px;
+
+  width: 200px;
+  height: 150px;
+
   cursor: pointer;
+
+  background: seashell;
+  box-shadow: inset 3px 3px 3px 0px rgba(0, 0, 15, 0.15);
+  border-radius: 3px;
+  border: solid 2px seashell;
 }
 .board-element:hover {
   color: salmon;
+}
+.board-title {
+  font: 20px;
+  position: relative;
+  top: 10%;
 }
 .list-new {
   cursor: pointer;
