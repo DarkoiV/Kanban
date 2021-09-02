@@ -83,17 +83,19 @@ const actions = {
       const oldList = state.lists.find(list =>
         list.tasks.find(task => taskID == task.id)
       )
+      if (newList == oldList) { return }
       let movedTask = oldList.tasks.find(task => task.id == taskID)
       
       commit('DROP_ON_LIST', {listID, movedTask})
       commit('REMOVE_FROM_LIST', {listID: oldList.id, taskID,})
 
       API.PATCH(`${API.URL}/board/${state.id}/${oldList.id}`, oldList)
-      API.PATCH(`${API.URL}/board/${state.id}/${newList.id}`, newList)
+      await API.PATCH(`${API.URL}/board/${state.id}/${newList.id}`, newList)
 
     }
     catch(err) {
       alert("Error when moving task " + err)
+      router.go()
     }
 
   }
