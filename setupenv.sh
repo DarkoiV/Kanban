@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # First argument is target directory
-if ! test "$1" = ; then
+if ! test "$1" = ""; then
 	mkdir -p "$1" && cd "$1"
 fi
 
