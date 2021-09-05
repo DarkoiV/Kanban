@@ -15,9 +15,6 @@ echo
 read -p 'Application port[9000]: ' APP_PORT
 echo "APP_PORT=${APP_PORT:-9000}" >> .env
 
-read -p 'Admin user pswd[admin]: ' APP_PASS
-echo "APP_PASS=${APP_PASS:-admin}" >> .env
-
 echo '\n# Database' >> .env
 
 echo
