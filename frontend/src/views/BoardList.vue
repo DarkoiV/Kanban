@@ -1,6 +1,5 @@
 <template>
   <div class="board-list shadowBox">
-    <p class="list-title"> LIST OF BOARDS </p>
     <p> ------------------------------------</p>
     <div class=flex-container>
       <div
@@ -18,6 +17,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'BoardList',
 
@@ -33,10 +33,14 @@ export default {
       ({title: "Second Board", id: 2}),
       ({title: "Third Board", id: 3})
     ]
+    this.setNavTitle("BOARD LIST")
   },
 
   methods: {
+    ...mapActions(["setNavTitle"]),
+
     redirect(id) {
+      this.setNavTitle("")
       this.$router.push({ name: 'Board', params: {id: id}})
     }
   }
@@ -46,7 +50,7 @@ export default {
 <style scoped>
 .board-list {
   margin: auto;
-  margin-top: 5vh;
+  margin-top: 60px;
 
   font-family: Monaco, monospace;
   font-weight: 900;
@@ -58,10 +62,6 @@ export default {
   background: antiquewhite;
   border-radius: 3px;
   padding: 10px;
-}
-.list-title {
-  font-size: 24px;
-  margin-bottom: 10px;
 }
 .flex-container {
   margin: auto;
@@ -84,7 +84,9 @@ export default {
 }
 .board-element:hover {
   color: salmon;
-  border: solid 2px white;
+  border: solid 2px seashell;
+
+  box-shadow: 3px 3px 3px 0px rgba(0, 0, 15, 0.15);
 }
 .board-title {
   font: 20px;

@@ -1,6 +1,5 @@
 <template>
   <div v-show="!loading">
-    <BoardHeader :boardName="name"/> 
     <div class="main-body">
       <List v-for="list in lists"
         :id = "list.id"
@@ -18,7 +17,6 @@
 
 <script>
 import List from '../components/List.vue'
-import BoardHeader from '../components/BoardHeader.vue'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
@@ -29,8 +27,7 @@ export default {
   },
 
   components: {
-    List,
-    BoardHeader
+    List
   },
 
   computed: mapGetters(['name', 'lists', 'loading']),
@@ -39,7 +36,7 @@ export default {
     this.fetchBoard(this.id)
   },
 
-  methods: mapActions(["fetchBoard", "newList"]),
+  methods: mapActions(["fetchBoard", "newList", 'setNavTitle']),
 
 
 }
@@ -52,7 +49,7 @@ export default {
   flex-wrap: nowrap;
 
   padding: 25px;
-  padding-top: 50px;
+  padding-top: 60px;
 }
 #newlist {
   font-family: Monaco, monospace;

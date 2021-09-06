@@ -9,6 +9,7 @@ const state = {
 }
 
 const getters = {
+  boardID: state => state.id,
   name: state => state.name,
   loading: state => state.loading,
   lists: state => state.lists
@@ -20,6 +21,7 @@ const actions = {
     try {
       const board = await API.GET(API.URL + "/board/" + id)
       commit('LOAD_BOARD', board)
+      commit('SET_NAV_TITLE', board.name)
     } catch(err) {
       alert("Error when loading board " + err)
       router.push('/notfound')
