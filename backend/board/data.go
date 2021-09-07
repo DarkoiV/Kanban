@@ -13,6 +13,7 @@ type task struct {
 	Description string    `json:"description"`
 	CreatedAt   time.Time `json:"createdAt"`
 	ListID      uint      `json:"-"`
+	BoardID     uint      `json:"-"`
 }
 
 func (t *task) toJSON(w io.Writer) error {
@@ -49,6 +50,7 @@ type board struct {
 	ID    uint       `json:"id"`
 	Name  string     `json:"name"`
 	Lists []taskList `json:"lists"   gorm:"foreignKey:BoardID;constraint:OnDelete:CASCADE"`
+	Tasks []task     `json:"-"       gorm:"foreignKey:BoardID;constraint:OnDelete:CASCADE"`
 }
 
 func (b *board) toJSON(w io.Writer) error {

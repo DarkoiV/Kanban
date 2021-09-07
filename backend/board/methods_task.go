@@ -13,6 +13,7 @@ func (bh handler) PostTask(rw http.ResponseWriter, rq *http.Request) {
 	boardID := rqVars["boardID"]
 	listID := rqVars["listID"]
 
+	// Get task from request
 	var reqTask task
 	if err := reqTask.fromJSON(rq.Body); err != nil {
 		bh.l.Print("Error with JSON unmarshall,", err)
@@ -25,6 +26,7 @@ func (bh handler) PostTask(rw http.ResponseWriter, rq *http.Request) {
 		return uint(ID)
 	}(listID)
 
+	// Check for list on board
 	result := bh.db.Where("id = ?", listID).Where("board_id = ?", boardID).Find(&taskList{})
 	if result.Error != nil || result.RowsAffected == 0 {
 		bh.l.Println("List with ID:", listID, "on board", boardID, "does not exist")
@@ -32,14 +34,24 @@ func (bh handler) PostTask(rw http.ResponseWriter, rq *http.Request) {
 		return
 	}
 
+	reqTask.BoardID = func(boardID string) uint {
+		ID, _ := strconv.Atoi(boardID)
+		return uint(ID)
+	}(boardID)
+
+	// Create task in DB
 	result = bh.db.Create(&reqTask)
-	if result.Error != nil || result.RowsAffected == 0 {
+	if result.Error != nil {
 		bh.l.Println("Error when creating new task", result.Error)
 		rw.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	reqTask.toJSON(rw)
+	// Respond with task with ID
+	if err := reqTask.toJSON(rw); err != nil {
+		bh.l.Println("Error with JSON marshal,", err)
+		rw.WriteHeader(http.StatusInternalServerError)
+	}
 }
 
 // (PUT) update task
@@ -49,6 +61,7 @@ func (bh handler) UpdateTask(rw http.ResponseWriter, rq *http.Request) {
 	listID := rqVars["listID"]
 	taskID := rqVars["taskID"]
 
+	// Get task from request
 	var reqTask task
 	if err := reqTask.fromJSON(rq.Body); err != nil {
 		bh.l.Print("Error with JSON unmarshall,", err)
@@ -64,23 +77,19 @@ func (bh handler) UpdateTask(rw http.ResponseWriter, rq *http.Request) {
 		return
 	}
 
-	// Check if list is on board
-	result := bh.db.Where("id = ?", listID).Where("board_id = ?", boardID).Find(&taskList{})
-	if result.Error != nil || result.RowsAffected == 0 {
-		bh.l.Println("List with ID:", listID, "on board", boardID, "does not exist")
+	// Check if task is on list and board, and update if so
+	result := bh.db.Where("id = ?", taskID).Where("list_id = ?", listID).Where("board_id = ?", boardID).Updates(reqTask)
+	if result.Error != nil {
+		bh.l.Println("Task not updated:", result.Error)
 		rw.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	// Check if task is on list, and update if so
-	result = bh.db.Where("id = ?", taskID).Where("list_id = ?", listID).Updates(reqTask)
-	if result.Error != nil || result.RowsAffected == 0 {
-		bh.l.Println("Task with ID:", taskID, "on list", listID, "does not exist")
-		rw.WriteHeader(http.StatusNotFound)
-		return
+	// Respond with updated task
+	if err := reqTask.toJSON(rw); err != nil {
+		bh.l.Println("Error with JSON marshal,", err)
+		rw.WriteHeader(http.StatusInternalServerError)
 	}
-
-	reqTask.toJSON(rw)
 }
 
 // (DELETE) task

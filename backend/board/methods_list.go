@@ -70,13 +70,30 @@ func (bh handler) UpdateList(rw http.ResponseWriter, rq *http.Request) {
 	}
 
 	tasks := reqList.Tasks
-	for _, utask := range tasks {
-		utask.ListID = uint(listIDNum)
-		utaskPos := strconv.Itoa(int(utask.Pos))
-		result := bh.db.Model(&task{}).Where("id = ?", utask.ID).Updates(map[string]interface{}{"pos": utaskPos, "list_id": utask.ListID})
-		if result.Error != nil || result.RowsAffected == 0 {
-			bh.l.Println(result.Error)
-		}
+	completed := make(chan bool, len(tasks))
+	for _, taskForUpdate := range tasks {
+		go func(taskForUpdate task) {
+			// Values for being updated
+			taskForUpdate.ListID = uint(listIDNum)
+			taskForUpdatePos := strconv.Itoa(int(taskForUpdate.Pos))
+
+			// Querry
+			result := bh.db.Model(&task{}).
+				Where("id = ?", taskForUpdate.ID).
+				Where("board_id = ?", taskForUpdate.BoardID).
+				Updates(map[string]interface{}{"pos": taskForUpdatePos, "list_id": taskForUpdate.ListID})
+
+			if result.Error != nil {
+				bh.l.Println(result.Error)
+			}
+
+			completed <- true
+		}(taskForUpdate)
+	}
+
+	// Wait for completion of task updates
+	for range tasks {
+		<-completed
 	}
 
 	if err := reqList.toJSON(rw); err != nil {
