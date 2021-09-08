@@ -35,7 +35,7 @@ const actions = {
         title: "New List",
         pos: state.lists.length
       }
-      const newList = await API.POST(API.URL + "/board/" + state.id + "/new", newListBody)
+      const newList = await API.POST(API.URL + "/board/" + state.id, newListBody)
       newList.tasks = []
       commit('NEW_LIST', newList)
     } catch(err) {
@@ -64,7 +64,7 @@ const actions = {
         description: "Double click to edit",
         pos: list.tasks.length
       }
-      const newTask = await API.POST(`${API.URL}/board/${state.id}/${listID}/new`, newTaskBody)
+      const newTask = await API.POST(`${API.URL}/board/${state.id}/${listID}`, newTaskBody)
       commit('NEW_TASK', {listID: listID, newTask: newTask})
     } catch(err) {
       alert("Error when creating new task" + err)

@@ -25,21 +25,21 @@ func NewHandler(l *log.Logger, db *gorm.DB) *handler {
 func (bh handler) RegisterRoutes(route *mux.Router) {
 	route.Use(bh.middleware)
 
-	// Board route
-	route.HandleFunc("/new", bh.CreateBoard).Methods("POST")
+	// Board methods
+	route.HandleFunc("", bh.CreateBoard).Methods("POST")
 	boardRoute := route.PathPrefix("/{boardID:[0-9]+}").Subrouter()
 
 	boardRoute.HandleFunc("", bh.GetBoard).Methods("GET")
 	boardRoute.HandleFunc("", bh.DeleteBoard).Methods("DELETE")
+	boardRoute.HandleFunc("", bh.CreateList).Methods("POST")
 
-	// List route
-	boardRoute.HandleFunc("/new", bh.CreateList).Methods("POST")
+	// List methods
 	listRoute := boardRoute.PathPrefix("/{listID:[0-9]+}").Subrouter()
 	listRoute.HandleFunc("", bh.UpdateList).Methods("PATCH")
 	listRoute.HandleFunc("", bh.DeleteList).Methods("DELETE")
 
-	// Task route
-	listRoute.HandleFunc("/new", bh.PostTask).Methods("POST")
+	// Task methods
+	listRoute.HandleFunc("", bh.PostTask).Methods("POST")
 	listRoute.HandleFunc("/{taskID:[0-9]+}", bh.UpdateTask).Methods("PUT")
 	listRoute.HandleFunc("/{taskID:[0-9]+}", bh.DeleteTask).Methods("DELETE")
 }
