@@ -1,8 +1,11 @@
 #!/bin/sh
 
-# First argument is target directory
-if ! test "$1" = ""; then
-	mkdir -p "$1" && cd "$1"
+default_db_host=psdb
+
+# -b means build mode
+if ! test "$1" = "b"; then
+	test -d "build/latest" && cd "build/latest" 
+	default_db_host=localhost
 fi
 
 echo Creating new .env
@@ -21,8 +24,8 @@ echo
 read -p 'Database name[kanbanDB]: ' DB_NAME
 echo "DB_NAME=${DB_NAME:-kanbanDB}" >> .env
 
-read -p 'Database host[psdb]: ' DB_HOST
-echo "DB_HOST=${DB_HOST:-psdb}" >> .env
+read -p "Database host[$default_db_host]: " DB_HOST
+echo "DB_HOST=${DB_HOST:-$default_db_host}" >> .env
 
 read -p 'Database port[5432]: ' DB_PORT
 echo "DB_PORT=${DB_PORT:-5432}" >> .env

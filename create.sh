@@ -17,4 +17,4 @@ mkdir build/$FOLDER_NAME
 (cd build; test -d latest && unlink latest; ln -s $FOLDER_NAME latest)
 
 # Ask for .env
-./setupenv.sh "build/$FOLDER_NAME"
+./setupenv.sh -b
