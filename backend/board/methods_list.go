@@ -73,15 +73,13 @@ func (bh handler) UpdateList(rw http.ResponseWriter, rq *http.Request) {
 	completed := make(chan bool, len(tasks))
 	for _, taskForUpdate := range tasks {
 		go func(taskForUpdate task) {
-			// Values for being updated
 			taskForUpdate.ListID = uint(listIDNum)
-			taskForUpdatePos := strconv.Itoa(int(taskForUpdate.Pos))
 
 			// Querry
 			result := bh.db.Model(&task{}).
 				Where("id = ?", taskForUpdate.ID).
-				Where("board_id = ?", taskForUpdate.BoardID).
-				Updates(map[string]interface{}{"pos": taskForUpdatePos, "list_id": taskForUpdate.ListID})
+				Where("board_id = ?", boardID).
+				Updates(map[string]interface{}{"pos": taskForUpdate.Pos, "list_id": taskForUpdate.ListID})
 
 			if result.Error != nil {
 				bh.l.Println(result.Error)
