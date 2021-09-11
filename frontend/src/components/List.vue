@@ -111,9 +111,7 @@ export default {
       event.dataTransfer.dropEffect = 'move'
       event.dataTransfer.effectAllowed = 'move'
       event.dataTransfer.setData('taskID', taskID)
-      this.$nextTick( () => {
-        event.currentTarget.classList.add('dragged')
-      })
+      event.currentTarget.classList.add('dragged')
     },
 
     endDrag(event) {

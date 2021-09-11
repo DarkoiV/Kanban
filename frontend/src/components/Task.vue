@@ -102,6 +102,7 @@ export default {
 .task.dragged {
   color: grey;
   opacity: 0.5;
+  box-shadow: none;
 }
 textarea {
   font-family: Avenir, Helvetica, Arial, sans-serif;
