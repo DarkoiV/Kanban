@@ -60,17 +60,17 @@ export default {
   },
 
   methods: {
-    ...mapActions(["setNavTitle", "getBoards", "newBoard"]),
+    ...mapActions(["setNavTitle", "getBoards", "newBoard", "removeBoard"]),
 
     toBoard(id) {
       this.setNavTitle("")
       this.$router.push({ name: 'Board', params: {id: id}})
     },
 
-    deleteBoard(e, id) {
+    deleteBoard(e, id, name) {
       e.stopPropagation()
-      if ( confirm("Do you really want to delete board " + id + "?")) {
-        console.log("Deleted lmao")
+      if ( confirm("Do you really want to delete board " + name + "?")) {
+        this.removeBoard(id)
       }
     },
 

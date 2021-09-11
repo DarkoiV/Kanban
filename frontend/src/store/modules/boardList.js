@@ -29,6 +29,16 @@ const actions = {
     } catch(err) {
       alert(err)
     }
+  },
+
+  async removeBoard({commit}, id) {
+    try {
+      await API.DELETE(`${API.URL}/board/${id}`)
+      const listOfBoards = await API.GET(`${API.URL}/board/list`)
+      commit('SET_BOARDS_LIST', listOfBoards)
+    } catch(err) {
+      alert(err)
+    }
   }
 }
 
