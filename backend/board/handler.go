@@ -27,6 +27,7 @@ func (bh handler) RegisterRoutes(route *mux.Router) {
 
 	// Board methods
 	route.HandleFunc("", bh.CreateBoard).Methods("POST")
+	route.HandleFunc("/list", bh.GetBoards).Methods("GET")
 	boardRoute := route.PathPrefix("/{boardID:[0-9]+}").Subrouter()
 
 	boardRoute.HandleFunc("", bh.GetBoard).Methods("GET")
