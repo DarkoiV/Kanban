@@ -32,6 +32,7 @@ func (bh handler) GetBoards(rw http.ResponseWriter, rq *http.Request) {
 	if result.Error != nil {
 		bh.l.Println(result.Error)
 		rw.WriteHeader(http.StatusInternalServerError)
+		writeMessageJSON(rw, "Server error")
 		return
 	}
 
@@ -56,6 +57,7 @@ func (bh handler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
 	if result.Error != nil {
 		bh.l.Println(result.Error)
 		rw.WriteHeader(http.StatusNotFound)
+		writeMessageJSON(rw, "Not found")
 		return
 	}
 
@@ -77,4 +79,6 @@ func (bh handler) DeleteBoard(rw http.ResponseWriter, rq *http.Request) {
 		rw.WriteHeader(http.StatusNotFound)
 		return
 	}
+
+	writeMessageJSON(rw, "Deleted succesfully")
 }

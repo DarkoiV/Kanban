@@ -18,6 +18,7 @@ func (bh handler) PostTask(rw http.ResponseWriter, rq *http.Request) {
 	if err := reqTask.fromJSON(rq.Body); err != nil {
 		bh.l.Print("Error with JSON unmarshall,", err)
 		rw.WriteHeader(http.StatusInternalServerError)
+		writeMessageJSON(rw, "Server error")
 		return
 	}
 
@@ -31,6 +32,7 @@ func (bh handler) PostTask(rw http.ResponseWriter, rq *http.Request) {
 	if result.Error != nil || result.RowsAffected == 0 {
 		bh.l.Println("List with ID:", listID, "on board", boardID, "does not exist")
 		rw.WriteHeader(http.StatusNotFound)
+		writeMessageJSON(rw, "Not found")
 		return
 	}
 
@@ -43,7 +45,8 @@ func (bh handler) PostTask(rw http.ResponseWriter, rq *http.Request) {
 	result = bh.db.Create(&reqTask)
 	if result.Error != nil {
 		bh.l.Println("Error when creating new task", result.Error)
-		rw.WriteHeader(http.StatusNotFound)
+		rw.WriteHeader(http.StatusInternalServerError)
+		writeMessageJSON(rw, "Server error")
 		return
 	}
 
@@ -66,6 +69,7 @@ func (bh handler) UpdateTask(rw http.ResponseWriter, rq *http.Request) {
 	if err := reqTask.fromJSON(rq.Body); err != nil {
 		bh.l.Print("Error with JSON unmarshall,", err)
 		rw.WriteHeader(http.StatusInternalServerError)
+		writeMessageJSON(rw, "Server error")
 		return
 	}
 
@@ -74,6 +78,7 @@ func (bh handler) UpdateTask(rw http.ResponseWriter, rq *http.Request) {
 		bh.l.Print(reqTask.ID, err)
 		bh.l.Print("Wrong endpoint for this task")
 		rw.WriteHeader(http.StatusInternalServerError)
+		writeMessageJSON(rw, "Server error")
 		return
 	}
 
@@ -82,6 +87,7 @@ func (bh handler) UpdateTask(rw http.ResponseWriter, rq *http.Request) {
 	if result.Error != nil {
 		bh.l.Println("Task not updated:", result.Error)
 		rw.WriteHeader(http.StatusNotFound)
+		writeMessageJSON(rw, "Not found")
 		return
 	}
 

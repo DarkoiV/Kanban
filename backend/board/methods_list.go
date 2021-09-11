@@ -16,6 +16,7 @@ func (bh handler) CreateList(rw http.ResponseWriter, rq *http.Request) {
 	if err := newList.fromJSON(rq.Body); err != nil {
 		bh.l.Println(err)
 		rw.WriteHeader(http.StatusInternalServerError)
+		writeMessageJSON(rw, "Server error")
 		return
 	}
 
@@ -23,6 +24,7 @@ func (bh handler) CreateList(rw http.ResponseWriter, rq *http.Request) {
 	if err != nil {
 		bh.l.Print("Error getting board ID from URL", err)
 		rw.WriteHeader(http.StatusInternalServerError)
+		writeMessageJSON(rw, "Server error")
 		return
 	}
 	newList.BoardID = uint(boardIDNumber)
@@ -45,6 +47,7 @@ func (bh handler) UpdateList(rw http.ResponseWriter, rq *http.Request) {
 	if err := reqList.fromJSON(rq.Body); err != nil {
 		bh.l.Println(err)
 		rw.WriteHeader(http.StatusInternalServerError)
+		writeMessageJSON(rw, "Server error")
 		return
 	}
 
@@ -52,6 +55,7 @@ func (bh handler) UpdateList(rw http.ResponseWriter, rq *http.Request) {
 	if err != nil {
 		bh.l.Println(err)
 		rw.WriteHeader(http.StatusInternalServerError)
+		writeMessageJSON(rw, "Server error")
 		return
 	}
 
@@ -59,6 +63,7 @@ func (bh handler) UpdateList(rw http.ResponseWriter, rq *http.Request) {
 	if result.Error != nil || result.RowsAffected == 0 {
 		bh.l.Println("List with ID:", listID, "on board", boardID, "does not exist")
 		rw.WriteHeader(http.StatusNotFound)
+		writeMessageJSON(rw, "Not found")
 		return
 	}
 
@@ -66,6 +71,7 @@ func (bh handler) UpdateList(rw http.ResponseWriter, rq *http.Request) {
 	if result.Error != nil || result.RowsAffected == 0 {
 		bh.l.Println(result.Error)
 		rw.WriteHeader(http.StatusNotFound)
+		writeMessageJSON(rw, "Not found")
 		return
 	}
 
@@ -110,6 +116,9 @@ func (bh handler) DeleteList(rw http.ResponseWriter, rq *http.Request) {
 	if result.RowsAffected == 0 {
 		bh.l.Println("List with ID:", listID, "on board", boardID, "does not exist")
 		rw.WriteHeader(http.StatusNotFound)
+		writeMessageJSON(rw, "Not found")
 		return
 	}
+
+	writeMessageJSON(rw, "Deleted succesfully")
 }

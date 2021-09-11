@@ -60,7 +60,6 @@ func (bh handler) middleware(next http.Handler) http.Handler {
 	})
 }
 
-// Wirte msg to response
 func writeMessageJSON(rw io.Writer, msg string) {
 	message := struct {
 		Msg string `json:"msg"`
