@@ -2,9 +2,8 @@
   <div class="navigation">
     <div class="left">
       <ul class="links">
-        <li @click="goUserPanel"> User panel </li>
         <li @click="goBoardList"> Boards list </li>
-        <li @click="goCurrentBoard"> Current board </li>
+        <li @click="goCurrentBoard" :class="{disable: !onBoard}"> Current board </li>
       </ul>
     </div>
 
@@ -25,6 +24,10 @@ export default {
 
   computed: {
     ...mapGetters(['navTitle', 'boardID']),
+    
+    onBoard () {
+      return typeof this.boardID === 'number'
+    }
   },
 
   methods: {
@@ -35,7 +38,9 @@ export default {
     },
 
     goCurrentBoard() {
-      this.$router.push({ name: 'Board', params: {id: this.boardID} })
+      if(this.onBoard) {
+        this.$router.push({ name: 'Board', params: {id: this.boardID} })
+      }
     }
   },
 
@@ -87,10 +92,14 @@ li {
   float: left;
   cursor: pointer;
 }
-li:hover {
+li:hover:not(.disable) {
   color: salmon;
   box-shadow: 3px 3px 3px 0px rgba(0, 0, 15, 0.15);
   transform: translateY(5px);
+}
+li.disable {
+  color: grey;
+  cursor: default;
 }
 .center {
   justify-self: center;
