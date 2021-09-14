@@ -93,6 +93,25 @@ const actions = {
     callback()
   },
 
+  async deleteTask({ commit }, taskID) {
+    try {
+      const listID = state.lists.reduce( (ID, list) => {
+        if(list.tasks.find(task => task.id == taskID)) {
+          return list.id
+        } else {
+          return ID
+        }
+      }, -1)
+      console.log(listID)
+
+      await API.DELETE(`${API.URL}/board/${state.id}/${listID}/${taskID}`)
+
+      commit('REMOVE_FROM_LIST', {listID, taskID} )
+    } catch(err) {
+      alert(err)
+    }
+  },
+
   async dropTask({ commit }, { taskID, listID, ghostPos }) {
     try {
       const newList = state.lists.find(list => listID == list.id)
@@ -167,6 +186,7 @@ const mutations = {
     ]
     list.tasks.map((task, index) => task.pos = index )
   },
+
   REMOVE_FROM_LIST: (state, {listID, taskID}) => {
     const list = state.lists.find(list => list.id == listID)
     list.tasks = list.tasks.filter(task => task.id != taskID)

@@ -46,7 +46,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['updateTask']),
+    ...mapActions(['updateTask', 'deleteTask']),
 
     editTask() {
       this.formEdit = this.taskObject.description;
@@ -61,8 +61,10 @@ export default {
     saveEdit() {
       this.$refs.taskContainer.draggable = true;
 
-      // Check if edition changed anything
-      if(this.formEdit != this.taskObject.description) {
+      // Check if deleted or if edition changed anything
+      if(this.formEdit == "") {
+        this.deleteTask(this.taskObject.id)
+      } else if(this.formEdit != this.taskObject.description) {
         this.updateTask({
           taskID: this.taskObject.id,
           newDescription: this.formEdit,

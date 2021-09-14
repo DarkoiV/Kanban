@@ -100,5 +100,17 @@ func (bh handler) UpdateTask(rw http.ResponseWriter, rq *http.Request) {
 
 // (DELETE) task
 func (bh handler) DeleteTask(rw http.ResponseWriter, rq *http.Request) {
+	rqVars := mux.Vars(rq)
+	boardID := rqVars["boardID"]
+	taskID := rqVars["taskID"]
 
+	result := bh.db.Where("id = ?", taskID).Where("board_id = ?", boardID).Delete(&task{})
+	if result.RowsAffected == 0 {
+		bh.l.Println("Task with ID:", taskID, "on board", boardID, "does not exist")
+		rw.WriteHeader(http.StatusNotFound)
+		writeMessageJSON(rw, "Not found")
+		return
+	}
+
+	writeMessageJSON(rw, "Deleted succesfully")
 }
