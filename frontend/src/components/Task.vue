@@ -62,7 +62,7 @@ export default {
       this.$refs.taskContainer.draggable = true;
 
       // Check if deleted or if edition changed anything
-      if(this.formEdit == "") {
+      if(this.formEdit === "") {
         this.deleteTask(this.taskObject.id)
       } else if(this.formEdit != this.taskObject.description) {
         this.updateTask({

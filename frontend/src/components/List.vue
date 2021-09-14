@@ -83,7 +83,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['newTask', 'dropTask', 'renameList']),
+    ...mapActions(['newTask', 'dropTask', 'renameList', 'deleteList']),
 
     editTitle() {
       this.newTitle = this.title
@@ -94,13 +94,17 @@ export default {
     },
 
     saveEdit() {
-      if(this.newTitle != this.title) {
+      if (this.newTitle === "") {
+        if (confirm(`Do you really want to delete ${this.title}?`)) {
+          this.deleteList(this.id)
+        } else {
+          this.editable = false
+        }
+      } else if(this.newTitle != this.title) {
         this.renameList({
           listID: this.id,
           newTitle: this.newTitle,
-          callback: () => {
-            this.editable = false
-          }
+          callback: () => {this.editable = false}
         })
       } else {
         this.editable = false

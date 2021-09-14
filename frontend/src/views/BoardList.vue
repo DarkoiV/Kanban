@@ -69,7 +69,7 @@ export default {
 
     deleteBoard(e, id, name) {
       e.stopPropagation()
-      if ( confirm("Do you really want to delete board " + name + "?")) {
+      if ( confirm("Do you really want to delete " + name + "?")) {
         this.removeBoard(id)
       }
     },

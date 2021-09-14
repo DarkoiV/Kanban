@@ -62,7 +62,10 @@ func (bh handler) UpdateList(rw http.ResponseWriter, rq *http.Request) {
 	}
 
 	// Update list
-	result := bh.db.Where("id = ?", listID).Where("board_id = ?", boardID).Updates(&reqList)
+	result := bh.db.Model(&taskList{}).
+		Where("id = ?", listID).
+		Where("board_id = ?", boardID).
+		Updates(map[string]interface{}{"title": reqList.Title, "pos": reqList.Pos})
 	if result.Error != nil || result.RowsAffected == 0 {
 		bh.l.Println(err, " or if nil list not found")
 		rw.WriteHeader(http.StatusNotFound)

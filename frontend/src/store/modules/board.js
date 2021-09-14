@@ -45,9 +45,11 @@ const actions = {
 
   async renameList({ commit }, {listID, newTitle, callback}) {
     try {
+      const list = state.lists.find(list => listID == list.id)
       const editedList = {
         id: listID,
-        title: newTitle
+        title: newTitle,
+        pos: list.pos
       }
       await API.PATCH(`${API.URL}/board/${state.id}/${listID}`, editedList)
       commit("RENAME_LIST", {listID, newTitle})
@@ -55,6 +57,28 @@ const actions = {
       alert("Error when renaming list ", + err)
     }
     callback()
+  },
+
+  async deleteList({ commit }, listID) {
+    try {
+      await API.DELETE(`${API.URL}/board/${state.id}/${listID}`)
+
+      commit("DELETE_LIST", listID)
+
+      // Update pos on server
+      await state.lists.forEach(list => {
+        console.log(list)
+        const request = {
+          id: list.id,
+          title: list.title,
+          pos: list.pos
+        }
+        API.PATCH(`${API.URL}/board/${state.id}/${list.id}`, request)
+      })
+
+    } catch(err) {
+      alert("Error when deleting list " + err)
+    }
   },
 
   async newTask({ commit }, listID) {
@@ -102,13 +126,12 @@ const actions = {
           return ID
         }
       }, -1)
-      console.log(listID)
 
       await API.DELETE(`${API.URL}/board/${state.id}/${listID}/${taskID}`)
-
       commit('REMOVE_FROM_LIST', {listID, taskID} )
+
     } catch(err) {
-      alert(err)
+      alert("Error when deleting task " + err)
     }
   },
 
@@ -164,6 +187,13 @@ const mutations = {
   RENAME_LIST: (state, {listID, newTitle}) => {
     const list = state.lists.find(list => list.id == listID)
     list.title = newTitle
+  },
+
+  DELETE_LIST: (state, listID) => {
+    state.lists = state.lists.filter(list => list.id != listID)
+    state.lists.forEach( (list, index) => {
+      list.pos = index
+    })
   },
 
   UPDATE_TASK: (state, updatedTask) => {
