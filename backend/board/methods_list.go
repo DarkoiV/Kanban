@@ -43,6 +43,7 @@ func (bh handler) UpdateList(rw http.ResponseWriter, rq *http.Request) {
 	boardID := rqVars["boardID"]
 	listID := rqVars["listID"]
 
+	// Create struct containing data for updates
 	var reqList taskList
 	if err := reqList.fromJSON(rq.Body); err != nil {
 		bh.l.Println(err)
@@ -51,6 +52,7 @@ func (bh handler) UpdateList(rw http.ResponseWriter, rq *http.Request) {
 		return
 	}
 
+	// get list ID from URL
 	listIDNum, err := strconv.Atoi(listID)
 	if err != nil {
 		bh.l.Println(err)
@@ -59,22 +61,16 @@ func (bh handler) UpdateList(rw http.ResponseWriter, rq *http.Request) {
 		return
 	}
 
-	result := bh.db.Where("id = ?", listID).Where("board_id = ?", boardID).Find(&taskList{})
+	// Update list
+	result := bh.db.Where("id = ?", listID).Where("board_id = ?", boardID).Updates(&reqList)
 	if result.Error != nil || result.RowsAffected == 0 {
-		bh.l.Println("List with ID:", listID, "on board", boardID, "does not exist")
+		bh.l.Println(err, " or if nil list not found")
 		rw.WriteHeader(http.StatusNotFound)
 		writeMessageJSON(rw, "Not found")
 		return
 	}
 
-	result = bh.db.Updates(&reqList)
-	if result.Error != nil || result.RowsAffected == 0 {
-		bh.l.Println(result.Error)
-		rw.WriteHeader(http.StatusNotFound)
-		writeMessageJSON(rw, "Not found")
-		return
-	}
-
+	// Update pos and associations with list of tasks
 	tasks := reqList.Tasks
 	completed := make(chan bool, len(tasks))
 	for _, taskForUpdate := range tasks {
@@ -100,6 +96,7 @@ func (bh handler) UpdateList(rw http.ResponseWriter, rq *http.Request) {
 		<-completed
 	}
 
+	// Send request as response if all ok
 	if err := reqList.toJSON(rw); err != nil {
 		bh.l.Println("Error with JSON marshal,", err)
 		rw.WriteHeader(http.StatusInternalServerError)

@@ -123,12 +123,11 @@ func runServer(server *http.Server, logger *log.Logger) {
 
 	// Graceful shutdown
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
 	if err := server.Shutdown(ctx); err != nil {
 		logger.Fatalln("Server didn't shutdown properly:", err)
+	} else {
+		logger.Println("Server shutdown properly")
 	}
-	defer func() {
-		cancel()
-	}()
-
-	logger.Println("Server shutdown properly")
 }
