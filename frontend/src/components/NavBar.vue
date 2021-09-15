@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: "NavBar",
@@ -28,6 +28,7 @@ export default {
 
   methods: {
     ...mapActions(['setNavTitle']),
+    ...mapMutations(['SET_ON_BOARD']),
 
     goBoardList() {
       this.$router.push({ name: 'BoardList'})
@@ -42,6 +43,7 @@ export default {
 
   created() {
     this.setNavTitle("")
+    this.SET_ON_BOARD(false)
   }
 
 }

@@ -1,4 +1,5 @@
-export const URL = location.protocol + "//" + location.host + "/api"
+// export const URL = location.protocol + "//" + location.host + "/api"
+export const URL = location.protocol + "//localhost:9000/api"
 
 function MY_FETCH(URL, REQ) {
   return fetch(URL, REQ)

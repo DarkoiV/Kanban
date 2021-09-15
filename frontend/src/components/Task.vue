@@ -20,7 +20,7 @@
       /> 
     </form>
 
-    <p class="createdAt"> {{ taskObject.createdAt }} </p>
+    <p class="createdAt"> {{ dateString }} </p>
   </div>
 </template>
 
@@ -38,6 +38,12 @@ export default {
     return {
       editable: Boolean,
       formEdit: String,
+    }
+  },
+
+  computed: {
+    dateString() {
+      return this.taskObject.createdAt.split("T")[0]
     }
   },
 

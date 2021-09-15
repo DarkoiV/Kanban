@@ -116,8 +116,10 @@ export default {
 
     saveEdit() {
       this.renameBoard({boardID: this.editing, newName: this.newName})
-      this.editing = -1;
-      this.newTitle = "";
+      setTimeout(() => {
+        this.editing = -1;
+        this.newTitle = "";
+      }, 100)
     }
   }
 }
