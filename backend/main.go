@@ -63,10 +63,25 @@ func connectToDB(logger *log.Logger) *gorm.DB {
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_PORT"))
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	var db *gorm.DB
+	var err error
 
-	if err != nil || db == nil {
-		logger.Fatalln("Could not connect to DB", err)
+	connected := false;
+	for try := 1; !connected; try++ {
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+		if err != nil || db == nil {
+			logger.Println("Could not connect to DB", err)
+			if try <= 5 {
+				logger.Println("Retrying after", 5 * try, "seconds")
+				time.Sleep(5 * time.Second * time.Duration(try))
+				continue;
+			} else {
+				logger.Fatalln("Aborting")
+			}
+		}
+
+		connected = true;
 	}
 
 	logger.Println("Connected to postgres database")
