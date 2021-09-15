@@ -9,7 +9,20 @@
         @click="toBoard(board.id)"
       >
 
-        <span class="board-title">  {{ board.name }} </span>
+        <input
+          ref="nameInput"
+          v-if="board.id == editing" 
+          class="board-title-edit"
+          v-model="newName"
+          maxlength="40"
+          @keydown.enter.shift.exact.prevent
+          @keydown.enter.shift.exact="makeBlur"
+          @keydown.enter.shift.prevent
+          @keydown.enter.exact="makeBlur"
+          @keydown.escape.exact="makeBlur"
+          @blur="saveEdit"
+        >
+        <span v-else class="board-title">  {{ board.name }} </span>
 
         <span class="delete-board"
           @click="deleteBoard($event, board.id, board.name)"
@@ -50,19 +63,30 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'BoardList',
 
+  data() {
+    return {
+      editing: Number,
+      newTitle: String
+    }
+  },
+
   computed: {
     ...mapGetters(["boards"])
   },
 
   created() {
+    this.editing = -1
+    this.newName = ""
+
     this.setNavTitle("BOARD LIST")
     this.getBoards()
   },
 
   methods: {
-    ...mapActions(["setNavTitle", "getBoards", "newBoard", "removeBoard"]),
+    ...mapActions(["setNavTitle", "getBoards", "newBoard", "renameBoard", "removeBoard"]),
 
     toBoard(id) {
+      if(this.editing != -1) {return}
       this.setNavTitle("")
       this.$router.push({ name: 'Board', params: {id: id}})
     },
@@ -76,7 +100,17 @@ export default {
 
     editBoard(e, id) {
       e.stopPropagation()
-      confirm(id)
+      this.editing = id
+    },
+
+    makeBlur() {
+      this.$refs.nameInput.blur()
+    },
+
+    saveEdit() {
+      this.renameBoard({boardID: this.editing, newName: this.newName})
+      this.editing = -1;
+      this.newTitle = "";
     }
   }
 }
@@ -129,6 +163,22 @@ export default {
   font: 20px;
   float: left;
   margin-left: 25px;
+}
+.board-title-edit {
+  font-family: Monaco, monospace;
+  font-size: 18px;
+
+  float: left;
+  margin-top: 5px;
+  margin-bottom: 3px;
+  margin-left: 25px;
+
+  background: seashell;
+
+  border: none;
+}
+.board-title-edit:focus {
+  outline: none;
 }
 .edit-board {
   float: right;

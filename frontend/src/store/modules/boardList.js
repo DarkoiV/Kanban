@@ -1,5 +1,4 @@
 import * as API from '../../api'
-import router from '../../router'
 
 const state = {
   boards: []
@@ -15,17 +14,29 @@ const actions = {
       const listOfBoards = await API.GET(`${API.URL}/board/list`)
       commit('SET_BOARDS_LIST', listOfBoards)
     } catch(err) {
-      alert(err)
+      alert("Error getting boards " + err)
     }
   },
 
-  async newBoard() {
+  async renameBoard({commit}, {boardID, newName}) {
+    try {
+      const reqBody = {
+        name: newName
+      }
+      await API.PATCH(`${API.URL}/board/${boardID}`, reqBody)
+      commit("RENAME_BOARD", {boardID, newName})
+    } catch(err) {
+      alert("Error renaming board " + err)
+    }
+  },
+
+  async newBoard({dispatch}) {
     try {
       const board = {
         name: "NEW BOARD"
       }
-      const newBoard = await API.POST(`${API.URL}/board`, board)
-      router.push({name: 'Board', params: {id: newBoard.id}})
+      await API.POST(`${API.URL}/board`, board)
+      dispatch('getBoards')
     } catch(err) {
       alert(err)
     }
@@ -37,7 +48,7 @@ const actions = {
       const listOfBoards = await API.GET(`${API.URL}/board/list`)
       commit('SET_BOARDS_LIST', listOfBoards)
     } catch(err) {
-      alert(err)
+      alert("Error deleting board " + err)
     }
   }
 }
@@ -45,6 +56,11 @@ const actions = {
 const mutations = {
   SET_BOARDS_LIST: (state, listOfBoards) => {
     state.boards = listOfBoards
+  },
+
+  RENAME_BOARD: (state, {boardID, newName}) => {
+    const board = state.boards.find(board => board.id == boardID)
+    board.name = newName
   }
 }
 

@@ -18,8 +18,11 @@
       id="title-in" 
       type="text" 
       v-model="newTitle"
+      maxlength="29"
       @keydown.enter.shift.exact.prevent
       @keydown.enter.shift.exact="this.$refs.titleInput.blur()"
+      @keydown.enter.exact.prevent
+      @keydown.enter.exact="this.$refs.titleInput.blur()"
       @keydown.escape.exact="this.$refs.titleInput.blur()"
       @blur="saveEdit"
     >

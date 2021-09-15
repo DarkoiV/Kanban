@@ -68,6 +68,34 @@ func (bh handler) GetBoard(rw http.ResponseWriter, rq *http.Request) {
 	}
 }
 
+// (PATCH) rename board
+func (bh handler) RenameBoard(rw http.ResponseWriter, rq *http.Request) {
+	rqVars := mux.Vars(rq)
+	boardID := rqVars["boardID"]
+
+	var reqBoard board
+	if err := reqBoard.fromJSON(rq.Body); err != nil {
+		bh.l.Println(err)
+		rw.WriteHeader(http.StatusInternalServerError)
+		writeMessageJSON(rw, "Server error")
+		return
+	}
+
+	// Rename board
+	result := bh.db.Model(&board{}).
+		Where("id = ?", boardID).
+		Updates(map[string]interface{}{"name": reqBoard.Name})
+	if result.Error != nil || result.RowsAffected == 0 {
+		bh.l.Println(result.Error, "or if nil board not found")
+		rw.WriteHeader(http.StatusNotFound)
+		writeMessageJSON(rw, "Not found")
+		return
+	}
+
+	writeMessageJSON(rw, "Renamed")
+
+}
+
 // (DELETE) board
 func (bh handler) DeleteBoard(rw http.ResponseWriter, rq *http.Request) {
 	rqVars := mux.Vars(rq)
