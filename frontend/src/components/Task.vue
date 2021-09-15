@@ -43,7 +43,12 @@ export default {
 
   computed: {
     dateString() {
-      return this.taskObject.createdAt.split("T")[0]
+      const createdStr = this.taskObject.createdAt
+      if( typeof createdStr == "string") {
+        return "Created " + createdStr.split("T")[0] + " at " + createdStr.split("T")[1].split(".")[0]
+      } else {
+        return ""
+      }
     }
   },
 
