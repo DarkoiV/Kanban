@@ -22,6 +22,7 @@ const actions = {
       const board = await API.GET(API.URL + "/board/" + id)
       commit('LOAD_BOARD', board)
       commit('SET_NAV_TITLE', board.name)
+      commit('SET_ON_BOARD', true)
     } catch(err) {
       alert("Error when loading board " + err)
       router.push('/notfound')
@@ -67,7 +68,6 @@ const actions = {
 
       // Update pos on server
       await state.lists.forEach(list => {
-        console.log(list)
         const request = {
           id: list.id,
           title: list.title,
@@ -176,6 +176,10 @@ const mutations = {
     state.lists.forEach( list => 
       list.tasks.sort( (a, b) => a.pos - b.pos )
     )
+  },
+
+  SET_DISABLED: (state) => {
+    state.id = -1
   },
 
   NEW_LIST: (state, newList) => state.lists.push(newList),

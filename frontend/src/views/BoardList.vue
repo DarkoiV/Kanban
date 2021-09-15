@@ -14,7 +14,7 @@
           v-if="board.id == editing" 
           class="board-title-edit"
           v-model="newName"
-          maxlength="40"
+          maxlength="25"
           @keydown.enter.shift.exact.prevent
           @keydown.enter.shift.exact="makeBlur"
           @keydown.enter.shift.prevent
@@ -100,7 +100,14 @@ export default {
 
     editBoard(e, id) {
       e.stopPropagation()
+      this.newTitle = this.boards.reduce( (acc,board) => {
+        if(board.id == id) {return board.name}
+        else {return acc}
+      }, "")
       this.editing = id
+      this.$nextTick( () => {
+        this.$refs.nameInput.focus()
+      })
     },
 
     makeBlur() {

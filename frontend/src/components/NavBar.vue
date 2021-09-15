@@ -23,11 +23,7 @@ export default {
   name: "NavBar",
 
   computed: {
-    ...mapGetters(['navTitle', 'boardID']),
-    
-    onBoard () {
-      return typeof this.boardID === 'number'
-    }
+    ...mapGetters(['navTitle', 'boardID', 'onBoard']), 
   },
 
   methods: {
@@ -104,7 +100,7 @@ li.disable {
 .center {
   justify-self: center;
   margin: auto;
-  width: 200px;
+  white-space: nowrap;
   text-align: center;
 }
 .left {

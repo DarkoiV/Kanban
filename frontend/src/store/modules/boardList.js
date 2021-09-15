@@ -47,6 +47,7 @@ const actions = {
       await API.DELETE(`${API.URL}/board/${id}`)
       const listOfBoards = await API.GET(`${API.URL}/board/list`)
       commit('SET_BOARDS_LIST', listOfBoards)
+      commit('SET_ON_BOARD', false)
     } catch(err) {
       alert("Error deleting board " + err)
     }
